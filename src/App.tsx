@@ -811,6 +811,78 @@ export default function App() {
                 </div>
               </div>
             )}
+
+            {/* Viral Booster Section (Moved to Sidebar) */}
+            <AnimatePresence>
+              {booster && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-gradient-to-br from-[#1DA1F2] to-[#0d8bd9] p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_20px_40px_rgba(29,161,242,0.2)] text-white space-y-6"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-black uppercase tracking-widest leading-tight">Viral Booster</h3>
+                      <p className="text-white/70 text-[10px] font-medium">Optimalkan jangkauan</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 space-y-2">
+                      <div className="flex items-center gap-2 text-white/60 text-[9px] font-black uppercase tracking-widest">
+                        <Hash className="w-2.5 h-2.5" />
+                        Hashtag
+                      </div>
+                      <p className="text-xs font-bold leading-relaxed">
+                        {booster.hashtags}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 space-y-2">
+                      <div className="flex items-center gap-2 text-white/60 text-[9px] font-black uppercase tracking-widest">
+                        <Calendar className="w-2.5 h-2.5" />
+                        Waktu Posting
+                      </div>
+                      <p className="text-xs font-bold leading-relaxed">
+                        {booster.bestTime}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 space-y-3">
+                      <div className="flex items-center gap-2 text-white/60 text-[9px] font-black uppercase tracking-widest">
+                        <MousePointer2 className="w-2.5 h-2.5" />
+                        Hook Alternatif
+                      </div>
+                      <div className="space-y-3">
+                        {booster.hooks?.map((hook, i) => (
+                          <div key={i} className="flex gap-3 group/hook">
+                            <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center font-black text-[10px] shrink-0">
+                              {i + 1}
+                            </div>
+                            <p className="text-[11px] font-medium leading-relaxed flex-1">
+                              {hook}
+                            </p>
+                            <button 
+                              onClick={() => {
+                                navigator.clipboard.writeText(hook);
+                                showToast('Hook disalin!');
+                              }}
+                              className="p-1.5 bg-white/10 hover:bg-white/30 rounded transition-all self-start"
+                            >
+                              <Copy className="w-2.5 h-2.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </aside>
 
           {/* Main Content / Preview */}
@@ -926,74 +998,6 @@ export default function App() {
                     </div>
                   </motion.div>
                 ))}
-
-                {booster && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-[#1DA1F2] to-[#0d8bd9] p-8 rounded-[32px] shadow-[0_20px_40px_rgba(29,161,242,0.2)] text-white space-y-8"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
-                        <TrendingUp className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-black uppercase tracking-widest">Viral Booster</h3>
-                        <p className="text-white/70 text-sm font-medium">Optimalkan jangkauan thread kamu</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                        <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
-                          <Hash className="w-3 h-3" />
-                          Hashtag Relevan
-                        </div>
-                        <p className="text-sm font-bold leading-relaxed">
-                          {booster.hashtags}
-                        </p>
-                      </div>
-
-                      <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                        <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
-                          <Calendar className="w-3 h-3" />
-                          Waktu Posting Terbaik
-                        </div>
-                        <p className="text-sm font-bold leading-relaxed">
-                          {booster.bestTime}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-4">
-                      <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
-                        <MousePointer2 className="w-3 h-3" />
-                        Hook Alternatif (Clickbait)
-                      </div>
-                      <div className="space-y-4">
-                        {booster.hooks?.map((hook, i) => (
-                          <div key={i} className="flex gap-4 group/hook">
-                            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center font-black text-xs shrink-0">
-                              {i + 1}
-                            </div>
-                            <p className="text-sm font-medium leading-relaxed flex-1">
-                              {hook}
-                            </p>
-                            <button 
-                              onClick={() => {
-                                navigator.clipboard.writeText(hook);
-                                showToast('Hook disalin!');
-                              }}
-                              className="p-2 bg-white/10 hover:bg-white/30 rounded-lg transition-all self-start"
-                            >
-                              <Copy className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
               </AnimatePresence>
             </div>
           </section>
