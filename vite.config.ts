@@ -9,10 +9,15 @@ export default defineConfig(({mode}) => {
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'global': 'window',
+      'process.env': '{}',
+      'process.env.NODE_ENV': JSON.stringify(mode),
+      'process.browser': 'true',
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        'node-fetch': 'node-fetch-native',
       },
     },
     server: {
