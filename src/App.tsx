@@ -162,11 +162,11 @@ export default function App() {
 
         <main className="relative z-10">
           {/* Hero Section */}
-          <section className="max-w-7xl mx-auto px-6 pt-20 pb-32 text-center">
+          <section className="max-w-7xl mx-auto px-6 pt-12 sm:pt-20 pb-20 sm:pb-32 text-center">
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#1DA1F2]/10 border border-[#1DA1F2]/20 rounded-full text-[#1DA1F2] text-xs font-black uppercase tracking-widest mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#1DA1F2]/10 border border-[#1DA1F2]/20 rounded-full text-[#1DA1F2] text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6 sm:mb-8"
             >
               <Sparkles className="w-3 h-3" />
               X & THREADS VIRAL ENGINE v2.5
@@ -176,7 +176,7 @@ export default function App() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8"
+              className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8"
             >
               DOMINASI <span className="text-[#1DA1F2]">X</span> & <span className="text-purple-500">THREADS</span><br />TANPA KERJA KERAS.
             </motion.h1>
@@ -185,7 +185,7 @@ export default function App() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-gray-400 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12"
+              className="text-gray-400 text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12"
             >
               Berhenti membuang waktu berjam-jam hanya untuk satu thread. Gunakan mesin viral kami yang menghasilkan konten "Anti-AI" yang dioptimalkan untuk X dan Threads dalam hitungan detik.
             </motion.p>
@@ -198,7 +198,7 @@ export default function App() {
             >
               <button 
                 onClick={handleGetAccess}
-                className="group relative px-10 py-5 bg-[#1DA1F2] text-white font-black uppercase tracking-widest rounded-2xl text-lg hover:scale-105 transition-all flex items-center gap-3 shadow-[0_0_50px_rgba(29,161,242,0.4)]"
+                className="group relative px-6 py-4 sm:px-10 sm:py-5 bg-[#1DA1F2] text-white font-black uppercase tracking-widest rounded-2xl text-base sm:text-lg hover:scale-105 transition-all flex items-center gap-3 shadow-[0_0_50px_rgba(29,161,242,0.4)]"
               >
                 {hasAccess ? 'MASUK KE DASHBOARD' : 'AMBIL AKSES SEKARANG'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -215,13 +215,13 @@ export default function App() {
           </section>
 
           {/* Detailed Features Section */}
-          <section className="py-32 bg-white/[0.01]">
+          <section className="py-16 sm:py-24 md:py-32 bg-white/[0.01]">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-20">
-                <h2 className="text-4xl md:text-5xl font-black mb-6">FITUR UNGGULAN KAMI</h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto">Dirancang khusus untuk kamu yang ingin membangun personal brand kuat di media sosial.</p>
+              <div className="text-center mb-12 sm:mb-20">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-6">FITUR UNGGULAN KAMI</h2>
+                <p className="text-gray-400 text-sm sm:text-lg max-w-2xl mx-auto">Dirancang khusus untuk kamu yang ingin membangun personal brand kuat di media sosial.</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 {[
                   { icon: Globe, title: "Multi-Platform", desc: "Satu kali generate, konten langsung siap untuk X dan Threads sekaligus." },
                   { icon: ShieldCheck, title: "100% Anti-AI", desc: "Gaya bahasa sangat manusiawi, menggunakan slang yang tepat, dan emosional." },
@@ -232,12 +232,12 @@ export default function App() {
                   { icon: MessageCircle, title: "Priority Support", desc: "Butuh bantuan? Tim kami siap membantu langsung via Dashboard." },
                   { icon: Zap, title: "Instant Result", desc: "Tidak perlu menunggu lama, hasil keluar dalam hitungan detik." }
                 ].map((feature, i) => (
-                  <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-[32px] hover:bg-white/10 transition-all group">
-                    <div className="w-12 h-12 bg-[#1DA1F2]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                      <feature.icon className="w-6 h-6 text-[#1DA1F2]" />
+                  <div key={i} className="bg-white/5 border border-white/10 p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] hover:bg-white/10 transition-all group">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#1DA1F2]/10 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                      <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#1DA1F2]" />
                     </div>
-                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{feature.title}</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">{feature.desc}</p>
                   </div>
                 ))}
               </div>
@@ -245,24 +245,24 @@ export default function App() {
           </section>
 
           {/* Problem Section */}
-          <section className="bg-white/[0.02] py-32 border-y border-white/5">
-            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-              <div className="space-y-8">
-                <h2 className="text-4xl md:text-5xl font-black leading-tight">
+          <section className="bg-white/[0.02] py-16 sm:py-24 md:py-32 border-y border-white/5">
+            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-20 items-center">
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black leading-tight">
                   KENAPA THREAD KAMU <span className="text-red-500">GAK PERNAH</span> VIRAL?
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {[
                     "Hook yang membosankan & gak bikin orang berhenti scroll.",
                     "Struktur berantakan yang bikin pembaca pusing.",
                     "Bahasa kaku kayak robot (AI banget).",
                     "Gak tahu cara 'soft sell' produk yang bener."
                   ].map((text, i) => (
-                    <div key={i} className="flex items-start gap-4">
-                      <div className="mt-1.5 w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <div key={i} className="flex items-start gap-3 sm:gap-4">
+                      <div className="mt-1 w-4 h-4 sm:w-5 sm:h-5 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full" />
                       </div>
-                      <p className="text-gray-400 text-lg">{text}</p>
+                      <p className="text-gray-400 text-base sm:text-lg">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -286,23 +286,23 @@ export default function App() {
           </section>
 
           {/* Solution / How it Works */}
-          <section className="py-32">
+          <section className="py-16 sm:py-24 md:py-32">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-20 space-y-4">
-                <h2 className="text-4xl md:text-6xl font-black">3 LANGKAH MENUJU VIRAL</h2>
-                <p className="text-gray-400 text-xl">Proses yang sangat simpel, hasil yang sangat brutal.</p>
+              <div className="text-center mb-12 sm:mb-20 space-y-3 sm:space-y-4">
+                <h2 className="text-2xl sm:text-4xl md:text-6xl font-black">3 LANGKAH MENUJU VIRAL</h2>
+                <p className="text-gray-400 text-base sm:text-xl">Proses yang sangat simpel, hasil yang sangat brutal.</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
                 {[
                   { step: "01", title: "Input Ide", desc: "Masukkan topik atau poin-poin kasar yang ada di kepala kamu." },
                   { step: "02", title: "AI Magic", desc: "Mesin kami meracik hook, storytelling, dan struktur viral." },
                   { step: "03", title: "Copy & Viral", desc: "Salin hasilnya, posting, dan lihat engagement kamu meledak." }
                 ].map((item, i) => (
                   <div key={i} className="relative group">
-                    <div className="text-8xl font-black text-white/5 absolute -top-10 -left-4 group-hover:text-[#1DA1F2]/10 transition-colors">{item.step}</div>
-                    <div className="relative space-y-4">
-                      <h3 className="text-2xl font-bold">{item.title}</h3>
-                      <p className="text-gray-400 leading-relaxed">{item.desc}</p>
+                    <div className="text-6xl sm:text-8xl font-black text-white/5 absolute -top-6 sm:-top-10 -left-2 sm:-left-4 group-hover:text-[#1DA1F2]/10 transition-colors">{item.step}</div>
+                    <div className="relative space-y-3 sm:space-y-4">
+                      <h3 className="text-xl sm:text-2xl font-bold">{item.title}</h3>
+                      <p className="text-gray-400 text-sm sm:text-base leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -311,13 +311,13 @@ export default function App() {
           </section>
 
           {/* Testimonials Section */}
-          <section className="py-32 bg-white/[0.01]">
+          <section className="py-16 sm:py-24 md:py-32 bg-white/[0.01]">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-20">
-                <h2 className="text-4xl md:text-5xl font-black mb-6">APA KATA MEREKA?</h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto italic">"Beneran anti-AI, gak kaku, dan hasilnya gila parah."</p>
+              <div className="text-center mb-12 sm:mb-20">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-6">APA KATA MEREKA?</h2>
+                <p className="text-gray-400 text-sm sm:text-lg max-w-2xl mx-auto italic">"Beneran anti-AI, gak kaku, dan hasilnya gila parah."</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 {[
                   { 
                     name: "@BudiKreator", 
@@ -338,19 +338,19 @@ export default function App() {
                   <motion.div 
                     key={i} 
                     whileHover={{ y: -10 }}
-                    className="bg-white/5 border border-white/10 p-8 rounded-[32px] space-y-6 relative overflow-hidden group"
+                    className="bg-white/5 border border-white/10 p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] space-y-4 sm:space-y-6 relative overflow-hidden group"
                   >
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Twitter className="w-12 h-12" />
+                      <Twitter className="w-8 h-8 sm:w-12 sm:h-12" />
                     </div>
-                    <div className="flex items-center gap-4">
-                      <img src={testi.avatar} className="w-12 h-12 rounded-full border-2 border-[#1DA1F2]" referrerPolicy="no-referrer" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <img src={testi.avatar} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-[#1DA1F2]" referrerPolicy="no-referrer" />
                       <div>
-                        <p className="font-bold">{testi.name}</p>
-                        <p className="text-xs text-gray-500">Verified Member</p>
+                        <p className="text-sm sm:text-base font-bold">{testi.name}</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500">Verified Member</p>
                       </div>
                     </div>
-                    <p className="text-gray-300 leading-relaxed italic">"{testi.text}"</p>
+                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed italic">"{testi.text}"</p>
                   </motion.div>
                 ))}
               </div>
@@ -358,12 +358,12 @@ export default function App() {
           </section>
 
           {/* Radical Scarcity Offer */}
-          <section className="max-w-5xl mx-auto px-6 py-20">
+          <section className="max-w-5xl mx-auto px-6 py-12 sm:py-20">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-[#1DA1F2] to-blue-900 rounded-[64px] p-12 md:p-24 text-center relative overflow-hidden shadow-[0_0_120px_rgba(29,161,242,0.4)] border-8 border-white/10"
+              className="bg-gradient-to-br from-[#1DA1F2] to-blue-900 rounded-[32px] sm:rounded-[64px] p-8 sm:p-12 md:p-24 text-center relative overflow-hidden shadow-[0_0_120px_rgba(29,161,242,0.4)] border-4 sm:border-8 border-white/10"
             >
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/30 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -377,25 +377,25 @@ export default function App() {
                   <Flame className="w-5 h-5" /> PERINGATAN: SISA {slotsLeft} SLOT TERAKHIR!
                 </motion.div>
                 
-                <h2 className="text-5xl md:text-8xl font-black leading-[0.85] tracking-tighter">
+                <h2 className="text-4xl sm:text-5xl md:text-8xl font-black leading-[0.85] tracking-tighter">
                   AMANKAN HARGA <br /><span className="text-yellow-400">PROMO 99RB</span> <br />SEKARANG JUGA!
                 </h2>
                 
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-white/40 text-3xl font-bold line-through tracking-tighter">Rp 299.000</p>
+                  <p className="text-white/40 text-xl sm:text-3xl font-bold line-through tracking-tighter">Rp 299.000</p>
                   <div className="flex items-center gap-6">
-                    <p className="text-7xl md:text-9xl font-black text-white drop-shadow-2xl">Rp 99rb</p>
+                    <p className="text-5xl sm:text-7xl md:text-9xl font-black text-white drop-shadow-2xl">Rp 99rb</p>
                     <motion.div 
                       animate={{ rotate: [12, 15, 12] }}
                       transition={{ repeat: Infinity, duration: 1 }}
-                      className="bg-yellow-400 text-black px-6 py-2 rounded-2xl font-black text-2xl shadow-2xl"
+                      className="bg-yellow-400 text-black px-4 py-1 sm:px-6 sm:py-2 rounded-2xl font-black text-xl sm:text-2xl shadow-2xl"
                     >
                       SAVE 67%
                     </motion.div>
                   </div>
                 </div>
 
-                <p className="text-white/90 text-2xl max-w-3xl mx-auto font-bold leading-relaxed">
+                <p className="text-white/90 text-lg sm:text-2xl max-w-3xl mx-auto font-bold leading-relaxed">
                   Jangan sampai menyesal. Besok harga <span className="text-red-400 underline decoration-4 underline-offset-8">NAIK 3X LIPAT</span>. Ini adalah kesempatan terakhir kamu untuk akses seumur hidup.
                 </p>
                 
@@ -403,8 +403,8 @@ export default function App() {
                   <div className="bg-black/20 backdrop-blur-xl p-8 rounded-[40px] border border-white/10 shadow-inner">
                     <p className="text-white/50 text-xs font-black uppercase tracking-[0.3em] mb-4">Slot Hampir Habis</p>
                     <div className="flex items-end justify-center gap-3">
-                      <p className="text-7xl font-black text-yellow-400 tabular-nums">{slotsLeft}</p>
-                      <p className="text-2xl font-bold text-white/30 mb-2">/ 100</p>
+                      <p className="text-5xl sm:text-7xl font-black text-yellow-400 tabular-nums">{slotsLeft}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-white/30 mb-2">/ 100</p>
                     </div>
                     <div className="mt-6 h-4 bg-white/10 rounded-full overflow-hidden p-1">
                       <motion.div 
@@ -417,7 +417,7 @@ export default function App() {
                   
                   <div className="bg-black/20 backdrop-blur-xl p-8 rounded-[40px] border border-white/10 shadow-inner">
                     <p className="text-white/50 text-xs font-black uppercase tracking-[0.3em] mb-4">Promo Berakhir Dalam</p>
-                    <p className="text-7xl font-black font-mono text-white tabular-nums tracking-tighter">{formatTime(timeLeft)}</p>
+                    <p className="text-5xl sm:text-7xl font-black font-mono text-white tabular-nums tracking-tighter">{formatTime(timeLeft)}</p>
                     <p className="mt-6 text-[10px] font-black text-red-400 uppercase tracking-[0.5em] animate-pulse">Waktu Hampir Habis!</p>
                   </div>
                 </div>
@@ -427,10 +427,10 @@ export default function App() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleGetAccess}
-                    className="group w-full px-12 py-10 bg-white text-[#1DA1F2] font-black uppercase tracking-[0.2em] rounded-[40px] text-3xl shadow-[0_30px_100px_rgba(255,255,255,0.4)] flex flex-col items-center gap-2"
+                    className="group w-full px-8 py-6 sm:px-12 sm:py-10 bg-white text-[#1DA1F2] font-black uppercase tracking-[0.2em] rounded-[30px] sm:rounded-[40px] text-xl sm:text-3xl shadow-[0_30px_100px_rgba(255,255,255,0.4)] flex flex-col items-center gap-2"
                   >
                     <span>{hasAccess ? 'MASUK KE DASHBOARD' : 'SAYA MAU AKSES PRO SEKARANG!'}</span>
-                    <span className="text-sm font-bold opacity-50 tracking-normal normal-case">Klik untuk lanjut ke Aktivasi Aman</span>
+                    <span className="text-xs sm:text-sm font-bold opacity-50 tracking-normal normal-case">Klik untuk lanjut ke Aktivasi Aman</span>
                   </motion.button>
                 </div>
 
@@ -471,11 +471,11 @@ export default function App() {
           </section>
 
           {/* Final CTA */}
-          <section className="py-32 text-center border-t border-white/5">
-            <h2 className="text-4xl md:text-6xl font-black mb-12">SIAP JADI RAJA <span className="text-[#1DA1F2]">X</span> & <span className="text-purple-500">THREADS</span>?</h2>
+          <section className="py-16 sm:py-32 text-center border-t border-white/5">
+            <h2 className="text-2xl sm:text-4xl md:text-6xl font-black mb-8 sm:mb-12">SIAP JADI RAJA <span className="text-[#1DA1F2]">X</span> & <span className="text-purple-500">THREADS</span>?</h2>
             <button 
               onClick={handleGetAccess}
-              className="px-12 py-6 bg-white text-black font-black uppercase tracking-widest rounded-2xl text-xl hover:bg-gray-200 transition-all"
+              className="px-8 py-4 sm:px-12 sm:py-6 bg-white text-black font-black uppercase tracking-widest rounded-2xl text-base sm:text-xl hover:bg-gray-200 transition-all"
             >
               {hasAccess ? 'MASUK KE DASHBOARD' : 'AMBIL AKSES SEKARANG'}
             </button>
@@ -523,14 +523,14 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-white/5 border border-white/10 p-10 rounded-[40px] backdrop-blur-xl space-y-8 relative z-10"
+          className="w-full max-w-md bg-white/5 border border-white/10 p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] backdrop-blur-xl space-y-6 sm:space-y-8 relative z-10"
         >
           <div className="text-center space-y-2">
             <div className="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/20">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-black uppercase tracking-tighter">Aktivasi Akses</h2>
-            <p className="text-gray-400">Masukkan kode akses untuk mulai menggunakan ThreadGenPro</p>
+            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tighter">Aktivasi Akses</h2>
+            <p className="text-gray-400 text-sm sm:text-base">Masukkan kode akses untuk mulai menggunakan ThreadGenPro</p>
           </div>
 
           <form onSubmit={handleVerifyCode} className="space-y-6">
@@ -538,7 +538,7 @@ export default function App() {
               type="text" 
               required
               placeholder="KODE-AKSES-ANDA"
-              className="w-full px-4 py-6 bg-white/5 border border-white/10 rounded-2xl focus:border-amber-500 outline-none transition-all font-black text-center text-2xl tracking-[0.3em] uppercase placeholder:tracking-normal placeholder:font-medium placeholder:text-lg"
+              className="w-full px-4 py-6 bg-white/5 border border-white/10 rounded-2xl focus:border-amber-500 outline-none transition-all font-black text-center text-xl sm:text-2xl tracking-[0.3em] uppercase placeholder:tracking-normal placeholder:font-medium placeholder:text-lg"
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
             />
@@ -621,24 +621,24 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Sidebar / Form */}
-          <aside className="lg:col-span-5 space-y-8">
-            <div className="bg-white p-8 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-amber-500" />
+          <aside className="lg:col-span-5 space-y-6 sm:space-y-8">
+            <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+              <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Konfigurasi Konten</h2>
-                  <p className="text-sm text-gray-400">Optimalkan untuk X & Threads</p>
+                  <h2 className="text-lg sm:text-xl font-bold">Konfigurasi Konten</h2>
+                  <p className="text-xs sm:text-sm text-gray-400">Optimalkan untuk X & Threads</p>
                 </div>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Topik Utama</label>
+                  <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Topik Utama</label>
                   <textarea 
                     placeholder="Apa yang ingin kamu bahas hari ini?"
-                    className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all min-h-[120px] resize-none outline-none font-medium placeholder:text-gray-300"
+                    className="w-full p-3 sm:p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-xl sm:rounded-2xl transition-all min-h-[100px] sm:min-h-[120px] resize-none outline-none font-medium placeholder:text-gray-300 text-sm sm:text-base"
                     value={params.topic}
                     onChange={(e) => setParams({...params, topic: e.target.value})}
                   />
@@ -647,7 +647,7 @@ export default function App() {
                 <button 
                   onClick={handleGenerate}
                   disabled={isGenerating || !params.topic}
-                  className="w-full py-5 bg-[#1DA1F2] text-white font-black uppercase tracking-widest rounded-2xl shadow-[0_20px_40px_rgba(29,161,242,0.2)] hover:shadow-[0_20px_40px_rgba(29,161,242,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-3"
+                  className="w-full py-4 sm:py-5 bg-[#1DA1F2] text-white font-black uppercase tracking-widest rounded-xl sm:rounded-2xl shadow-[0_20px_40px_rgba(29,161,242,0.2)] hover:shadow-[0_20px_40px_rgba(29,161,242,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-3 text-sm sm:text-base"
                 >
                   {isGenerating ? (
                     <>
@@ -672,7 +672,7 @@ export default function App() {
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
                   <Twitter className="w-5 h-5 text-[#1DA1F2]" />
                 </div>
-                <h2 className="text-xl font-bold">Preview Utas (X & Threads)</h2>
+                <h2 className="text-lg sm:text-xl font-bold">Preview Utas (X & Threads)</h2>
               </div>
               {thread.length > 0 && (
                 <button 
@@ -735,28 +735,28 @@ export default function App() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.05 }}
-                    className="bg-white p-8 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-gray-100 group relative hover:border-[#1DA1F2]/30 transition-all"
+                    className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-gray-100 group relative hover:border-[#1DA1F2]/30 transition-all"
                   >
-                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
+                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
                       <button 
                         onClick={() => copyToClipboard(tweet, index)}
-                        className="p-3 bg-gray-50 hover:bg-[#1DA1F2] hover:text-white rounded-2xl transition-all"
+                        className="p-2 sm:p-3 bg-gray-50 hover:bg-[#1DA1F2] hover:text-white rounded-xl sm:rounded-2xl transition-all"
                       >
-                        {copiedIndex === index ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        {copiedIndex === index ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Copy className="w-3 h-3 sm:w-4 sm:h-4" />}
                       </button>
                     </div>
                     
-                    <div className="flex gap-6">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center font-black text-gray-300 text-lg">
+                    <div className="flex gap-4 sm:gap-6">
+                      <div className="flex flex-col items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 rounded-xl sm:rounded-2xl flex items-center justify-center font-black text-gray-300 text-base sm:text-lg">
                           {index + 1}
                         </div>
                         {index < thread.length - 1 && (
-                          <div className="w-[2px] flex-1 bg-gradient-to-b from-gray-100 to-transparent rounded-full"></div>
+                          <div className="w-[1.5px] sm:w-[2px] flex-1 bg-gradient-to-b from-gray-100 to-transparent rounded-full"></div>
                         )}
                       </div>
-                      <div className="flex-1 pt-2">
-                        <p className="whitespace-pre-wrap text-[17px] leading-[1.6] text-gray-700 font-medium">
+                      <div className="flex-1 pt-1 sm:pt-2">
+                        <p className="whitespace-pre-wrap text-sm sm:text-[17px] leading-[1.6] text-gray-700 font-medium">
                           {tweet}
                         </p>
                         <div className="mt-6 flex items-center gap-4">
