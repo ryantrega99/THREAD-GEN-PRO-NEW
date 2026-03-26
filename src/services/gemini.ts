@@ -1,5 +1,6 @@
 export interface ThreadParams {
   topic: string;
+  tone?: 'SANTAI' | 'EDUKATIF' | 'VIRAL' | 'STORYTELLING' | 'HOT TAKE';
 }
 
 const SYSTEM_INSTRUCTION = `Kamu adalah content writer spesialis thread viral untuk platform X (Twitter) dan Threads paling gokil di Indonesia. Gaya bahasamu sangat "anti-AI": tidak kaku, penuh emosi, menggunakan slang yang tepat (tapi tetap sopan), dan punya struktur kalimat yang bervariasi (pendek-panjang).
@@ -34,7 +35,18 @@ ATURAN FORMAT:
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.`;
 
-export async function generateThread(params: ThreadParams): Promise<string[]> {
+export interface ViralBooster {
+  hashtags?: string;
+  bestTime?: string;
+  hooks?: string[];
+}
+
+export interface ThreadResponse {
+  tweets: string[];
+  booster?: ViralBooster;
+}
+
+export async function generateThread(params: ThreadParams): Promise<ThreadResponse> {
   try {
     const response = await fetch("/api/generate", {
       method: "POST",
@@ -58,7 +70,10 @@ export async function generateThread(params: ThreadParams): Promise<string[]> {
     }
 
     const data = await response.json();
-    return data.tweets || [];
+    return {
+      tweets: data.tweets || [],
+      booster: data.booster
+    };
   } catch (error) {
     console.error("Error generating thread:", error);
     throw error;

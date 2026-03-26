@@ -26,9 +26,12 @@ import {
   Smartphone,
   Globe,
   Flame,
-  LogOut
+  LogOut,
+  Hash,
+  Calendar,
+  MousePointer2
 } from 'lucide-react';
-import { generateThread, ThreadParams } from './services/gemini';
+import { generateThread, ThreadParams, ViralBooster } from './services/gemini';
 
 type ViewState = 'landing' | 'code' | 'app';
 
@@ -41,14 +44,16 @@ export default function App() {
   
   const [params, setParams] = useState<ThreadParams>({
     topic: '',
+    tone: 'SANTAI',
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [thread, setThread] = useState<string[]>([]);
+  const [booster, setBooster] = useState<ViralBooster | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
   const [slotsLeft, setSlotsLeft] = useState(3);
-  const [history, setHistory] = useState<{id: string, topic: string, thread: string[], timestamp: number}[]>([]);
+  const [history, setHistory] = useState<{id: string, topic: string, thread: string[], tone?: string, booster?: ViralBooster, timestamp: number}[]>([]);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('threadgen_history');
@@ -61,11 +66,13 @@ export default function App() {
     }
   }, []);
 
-  const saveToHistory = (topic: string, thread: string[]) => {
+  const saveToHistory = (topic: string, thread: string[], tone?: string, booster?: ViralBooster) => {
     const newItem = {
       id: Date.now().toString(),
       topic,
       thread,
+      tone,
+      booster,
       timestamp: Date.now(),
     };
     const updatedHistory = [newItem, ...history.filter(h => h.topic !== topic)].slice(0, 10);
@@ -80,9 +87,10 @@ export default function App() {
     localStorage.setItem('threadgen_history', JSON.stringify(updatedHistory));
   };
 
-  const loadFromHistory = (item: {topic: string, thread: string[]}) => {
-    setParams({ topic: item.topic });
+  const loadFromHistory = (item: {topic: string, thread: string[], tone?: any, booster?: ViralBooster}) => {
+    setParams({ topic: item.topic, tone: item.tone || 'SANTAI' });
     setThread(item.thread);
+    setBooster(item.booster || null);
   };
 
   useEffect(() => {
@@ -113,17 +121,25 @@ export default function App() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const showToast = (msg: string) => {
+    setNotificationMsg(msg);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
+  };
+
   const handleGenerate = async () => {
     if (!params.topic) return;
     setIsGenerating(true);
     setError(null);
+    setBooster(null);
     try {
       const result = await generateThread(params);
-      if (result.length === 0) {
+      if (result.tweets.length === 0) {
         setError("Gagal meracik thread. Coba ganti topik atau detailnya ya!");
       } else {
-        setThread(result);
-        saveToHistory(params.topic, result);
+        setThread(result.tweets);
+        setBooster(result.booster || null);
+        saveToHistory(params.topic, result.tweets, params.tone, result.booster);
       }
     } catch (err: any) {
       const msg = err.message || 'Terjadi kesalahan sistem';
@@ -144,8 +160,9 @@ export default function App() {
   };
 
   const reset = () => {
-    setParams({ topic: '' });
+    setParams({ topic: '', tone: 'SANTAI' });
     setThread([]);
+    setBooster(null);
     setError(null);
   };
 
@@ -625,6 +642,26 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] font-sans selection:bg-[#1DA1F2]/10">
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div 
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 20, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            className="fixed top-0 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm"
+          >
+            <div className="bg-amber-500 p-6 rounded-3xl shadow-2xl border border-white/20 flex items-center gap-4">
+              <div className="bg-white/20 p-3 rounded-2xl">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="font-black uppercase tracking-widest text-xs text-white">Sistem Notifikasi</p>
+                <p className="text-sm font-bold text-white">{notificationMsg}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -688,6 +725,25 @@ export default function App() {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pilih Tone</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(['SANTAI', 'EDUKATIF', 'VIRAL', 'STORYTELLING', 'HOT TAKE'] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setParams({ ...params, tone: t })}
+                        className={`py-2 px-3 rounded-xl text-[10px] font-bold transition-all border-2 ${
+                          params.tone === t 
+                            ? 'border-[#1DA1F2] bg-[#1DA1F2]/5 text-[#1DA1F2]' 
+                            : 'border-gray-100 text-gray-400 hover:border-gray-200'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <button 
                   onClick={handleGenerate}
                   disabled={isGenerating || !params.topic}
@@ -739,9 +795,16 @@ export default function App() {
                           <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
                       </div>
-                      <div className="mt-2 flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                        <Clock className="w-3 h-3" />
-                        {new Date(item.timestamp).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                      <div className="mt-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <Clock className="w-3 h-3" />
+                          {new Date(item.timestamp).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        {item.tone && (
+                          <span className="text-[#1DA1F2] bg-[#1DA1F2]/5 px-2 py-0.5 rounded-md">
+                            {item.tone}
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -764,6 +827,7 @@ export default function App() {
                   onClick={() => {
                     const allText = thread.join('\n\n---\n\n');
                     navigator.clipboard.writeText(allText);
+                    showToast('Seluruh thread disalin!');
                   }}
                   className="text-xs font-black uppercase tracking-widest text-[#1DA1F2] hover:bg-blue-50 px-4 py-2 rounded-lg transition-all"
                 >
@@ -824,7 +888,10 @@ export default function App() {
                   >
                     <div className="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
                       <button 
-                        onClick={() => copyToClipboard(tweet, index)}
+                        onClick={() => {
+                          copyToClipboard(tweet, index);
+                          showToast(`Tweet ${index + 1} disalin!`);
+                        }}
                         className="p-2 sm:p-3 bg-gray-50 hover:bg-[#1DA1F2] hover:text-white rounded-xl sm:rounded-2xl transition-all"
                       >
                         {copiedIndex === index ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Copy className="w-3 h-3 sm:w-4 sm:h-4" />}
@@ -859,6 +926,74 @@ export default function App() {
                     </div>
                   </motion.div>
                 ))}
+
+                {booster && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-br from-[#1DA1F2] to-[#0d8bd9] p-8 rounded-[32px] shadow-[0_20px_40px_rgba(29,161,242,0.2)] text-white space-y-8"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black uppercase tracking-widest">Viral Booster</h3>
+                        <p className="text-white/70 text-sm font-medium">Optimalkan jangkauan thread kamu</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+                        <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
+                          <Hash className="w-3 h-3" />
+                          Hashtag Relevan
+                        </div>
+                        <p className="text-sm font-bold leading-relaxed">
+                          {booster.hashtags}
+                        </p>
+                      </div>
+
+                      <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+                        <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
+                          <Calendar className="w-3 h-3" />
+                          Waktu Posting Terbaik
+                        </div>
+                        <p className="text-sm font-bold leading-relaxed">
+                          {booster.bestTime}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-4">
+                      <div className="flex items-center gap-2 text-white/60 text-[10px] font-black uppercase tracking-widest">
+                        <MousePointer2 className="w-3 h-3" />
+                        Hook Alternatif (Clickbait)
+                      </div>
+                      <div className="space-y-4">
+                        {booster.hooks?.map((hook, i) => (
+                          <div key={i} className="flex gap-4 group/hook">
+                            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center font-black text-xs shrink-0">
+                              {i + 1}
+                            </div>
+                            <p className="text-sm font-medium leading-relaxed flex-1">
+                              {hook}
+                            </p>
+                            <button 
+                              onClick={() => {
+                                navigator.clipboard.writeText(hook);
+                                showToast('Hook disalin!');
+                              }}
+                              className="p-2 bg-white/10 hover:bg-white/30 rounded-lg transition-all self-start"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
           </section>

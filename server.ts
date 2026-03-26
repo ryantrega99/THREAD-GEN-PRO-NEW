@@ -33,7 +33,25 @@ ATURAN FORMAT:
 - Setiap post maksimal ~280 karakter (aman untuk X & Threads).
 - Numbering otomatis (1/, 2/, 3/, dst).
 - Pisahkan setiap post dengan garis "---".
-- JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.`;
+- JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.
+ 
+EMOJI STRATEGIS (WAJIB):
+- Maksimal 2 emoji per tweet, jangan lebih.
+- Letakkan emoji di AKHIR kalimat penting, bukan di tengah.
+- Tweet 1/ (hook): pakai emoji yang memicu penasaran → 🧵 👇 ⚡ 🔥
+- Tweet berisi data/fakta: pakai → 📊 📌 💡
+- Tweet berisi tips/cara: pakai → ✅ 🎯 👉
+- Tweet terakhir (CTA): pakai → 🔁 ❤️ 💬
+- Jangan pakai emoji yang sama lebih dari sekali dalam satu thread.
+ 
+ CLIFFHANGER ENGINE (WAJIB):
+ - Setiap tweet (kecuali tweet terakhir) WAJIB diakhiri dengan kalimat yang memaksa orang lanjut baca tweet berikutnya.
+ - Teknik cliffhanger yang dipakai bergantian:
+   1. PERTANYAAN MENGGANTUNG: akhiri dengan pertanyaan yang belum dijawab (e.g., "Tapi siapa sangka, masalah sebenarnya bukan di situ...")
+   2. ANGKA MISTERIUS: sebut angka tanpa konteks dulu (e.g., "Dan angka 40% itu ternyata bukan yang paling mengejutkan.")
+   3. TWIST: kasih hint ada fakta mengejutkan di tweet berikutnya (e.g., "Yang bikin kaget? Ini justru disarankan sama PLN sendiri.")
+   4. JEDA DRAMATIS: potong cerita di momen paling tegang (e.g., "Pas aku cek tagihan bulan itu — aku hampir pingsan.")
+ - Aturan: Jangan pakai teknik yang sama 2 tweet berturutan. Tweet terakhir tidak pakai cliffhanger, tapi CTA yang kuat. Cliffhanger maksimal 15 kata.`;
 
 const app = express();
 const PORT = 3000;
@@ -42,7 +60,7 @@ app.use(express.json());
 
 // API Route for Gemini Generation
 app.post("/api/generate", async (req, res) => {
-  const { topic } = req.body;
+  const { topic, tone = 'SANTAI' } = req.body;
   
   const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
   if (!apiKey || apiKey === "TODO" || apiKey === "YOUR_API_KEY") {
@@ -56,7 +74,19 @@ app.post("/api/generate", async (req, res) => {
   console.log(`Using API Key starting with: ${apiKey.substring(0, 4)}...`);
 
   const ai = new GoogleGenAI({ apiKey });
+
+  const toneInstructions = {
+    'SANTAI': 'Gunakan bahasa gaul, akrab, pakai "kamu/kalian/kita", dan gunakan emoji secara strategis (maksimal 2 per tweet) agar terasa seperti teman ngobrol.',
+    'EDUKATIF': 'Gunakan gaya bahasa formal tapi tetap mudah dipahami. Sertakan data atau angka jika relevan untuk memperkuat argumen.',
+    'VIRAL': 'Fokus pada hook yang provokatif. Kalimat pertama harus sangat memancing klik (clickbait yang berkualitas).',
+    'STORYTELLING': 'Gunakan narasi personal yang dramatis. Tulis dari sudut pandang orang pertama (pengalaman pribadi).',
+    'HOT TAKE': 'Berikan opini yang berani dan kontroversi yang terukur. Gunakan sudut pandang yang tidak umum atau melawan arus.'
+  };
+
   const prompt = `BUAT THREAD VIRAL TENTANG: ${topic}
+DENGAN TONE: ${tone}
+
+Instruksi Tone Khusus: ${toneInstructions[tone as keyof typeof toneInstructions]}
 
 Tugasmu:
 1. Riset secara mandiri tools apa yang paling cocok untuk topik ini.
@@ -64,6 +94,19 @@ Tugasmu:
 3. Buat langkah-langkah (steps) yang praktis.
 4. Temukan tips rahasia (hidden gems) yang jarang orang tahu.
 5. Berikan rekomendasi link Shopee yang relevan (gunakan link shope.ee/ dummy atau format yang meyakinkan).
+
+6. EMOJI STRATEGIS: Gunakan maksimal 2 emoji per tweet di akhir kalimat penting. Jangan ada emoji duplikat dalam satu thread.
+
+7. CLIFFHANGER ENGINE: Setiap tweet (kecuali tweet terakhir) WAJIB diakhiri dengan kalimat cliffhanger (maks 15 kata) menggunakan teknik yang bergantian (Pertanyaan, Angka, Twist, Jeda).
+
+8. VIRAL BOOSTER (WAJIB):
+   Setelah thread selesai, tambahkan section VIRAL BOOSTER dengan format:
+   ===VIRAL_BOOSTER===
+   HASHTAG: [3-5 hashtag relevan]
+   WAKTU POSTING TERBAIK: [rekomendasi hari & jam]
+   HOOK ALTERNATIF:
+   1. [Hook 1]
+   2. [Hook 2]
 
 Pastikan gaya bahasanya sangat natural, anti-AI, dan perhatikan penggunaan spasi/enter agar tidak rapat-rapat.`;
 
@@ -78,21 +121,40 @@ Pastikan gaya bahasanya sangat natural, anti-AI, dan perhatikan penggunaan spasi
     });
 
     const text = response.text || "";
-    let tweets = text.split("---").map(t => t.trim()).filter(t => t.length > 0);
+    
+    // Split Viral Booster
+    const [threadContent, boosterContent] = text.split("===VIRAL_BOOSTER===");
+    
+    let tweets = (threadContent || "").split("---").map(t => t.trim()).filter(t => t.length > 0);
     
     if (tweets.length <= 1) {
       const numberingRegex = /\n(?=\d+\/)/g;
-      const splitByNumbering = text.split(numberingRegex).map(t => t.trim()).filter(t => t.length > 0);
+      const splitByNumbering = (threadContent || "").split(numberingRegex).map(t => t.trim()).filter(t => t.length > 0);
       if (splitByNumbering.length > 1) {
         tweets = splitByNumbering;
       }
     }
 
-    if (tweets.length === 0 && text.length > 0) {
-      tweets = [text];
+    if (tweets.length === 0 && (threadContent || "").length > 0) {
+      tweets = [threadContent.trim()];
     }
 
-    res.json({ tweets });
+    // Parse Booster
+    let booster = null;
+    if (boosterContent) {
+      const lines = boosterContent.trim().split('\n');
+      const hashtags = lines.find(l => l.includes('HASHTAG:'))?.split('HASHTAG:')[1]?.trim();
+      const bestTime = lines.find(l => l.includes('WAKTU POSTING TERBAIK:'))?.split('WAKTU POSTING TERBAIK:')[1]?.trim();
+      const hooks = lines.filter(l => l.match(/^\d\./)).map(l => l.replace(/^\d\.\s*/, '').trim());
+      
+      booster = {
+        hashtags,
+        bestTime,
+        hooks
+      };
+    }
+
+    res.json({ tweets, booster });
   } catch (error: any) {
     console.error("Gemini Error:", error);
     res.status(500).json({ error: error.message || "Gagal generate thread." });
