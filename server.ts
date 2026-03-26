@@ -45,12 +45,15 @@ app.post("/api/generate", async (req, res) => {
   const { topic } = req.body;
   
   const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
-  if (!apiKey || apiKey === "TODO") {
+  if (!apiKey || apiKey === "TODO" || apiKey === "YOUR_API_KEY") {
     console.error("GEMINI_API_KEY is missing or invalid.");
     return res.status(500).json({ 
       error: "API Key tidak ditemukan atau tidak valid. Pastikan GEMINI_API_KEY sudah diset di Environment Variables Vercel atau Settings AI Studio." 
     });
   }
+
+  // Debug: Log the first 4 characters of the key (safely)
+  console.log(`Using API Key starting with: ${apiKey.substring(0, 4)}...`);
 
   const ai = new GoogleGenAI({ apiKey });
   const prompt = `BUAT THREAD VIRAL TENTANG: ${topic}

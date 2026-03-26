@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Clock,
+  History,
   Users,
   MessageCircle,
   Lock,
@@ -47,6 +48,42 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
   const [slotsLeft, setSlotsLeft] = useState(3);
+  const [history, setHistory] = useState<{id: string, topic: string, thread: string[], timestamp: number}[]>([]);
+
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('threadgen_history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error("Failed to parse history", e);
+      }
+    }
+  }, []);
+
+  const saveToHistory = (topic: string, thread: string[]) => {
+    const newItem = {
+      id: Date.now().toString(),
+      topic,
+      thread,
+      timestamp: Date.now(),
+    };
+    const updatedHistory = [newItem, ...history.filter(h => h.topic !== topic)].slice(0, 10);
+    setHistory(updatedHistory);
+    localStorage.setItem('threadgen_history', JSON.stringify(updatedHistory));
+  };
+
+  const deleteHistoryItem = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    const updatedHistory = history.filter(item => item.id !== id);
+    setHistory(updatedHistory);
+    localStorage.setItem('threadgen_history', JSON.stringify(updatedHistory));
+  };
+
+  const loadFromHistory = (item: {topic: string, thread: string[]}) => {
+    setParams({ topic: item.topic });
+    setThread(item.thread);
+  };
 
   useEffect(() => {
     const savedAccess = localStorage.getItem('threadgen_pro_access');
@@ -84,10 +121,17 @@ export default function App() {
       const result = await generateThread(params);
       if (result.length === 0) {
         setError("Gagal meracik thread. Coba ganti topik atau detailnya ya!");
+      } else {
+        setThread(result);
+        saveToHistory(params.topic, result);
       }
-      setThread(result);
     } catch (err: any) {
-      setError(`Error: ${err.message || 'Terjadi kesalahan sistem'}`);
+      const msg = err.message || 'Terjadi kesalahan sistem';
+      if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
+        setError("API Key tidak valid. Pastikan kamu sudah memasukkan API Key yang benar di Settings AI Studio atau Environment Variables Vercel.");
+      } else {
+        setError(`Error: ${msg}`);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -619,9 +663,9 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
           {/* Sidebar / Form */}
-          <aside className="lg:col-span-5 space-y-6 sm:space-y-8">
+          <aside className="lg:col-span-4 space-y-6 sm:space-y-8">
             <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
               <div className="flex items-center gap-3 mb-6 sm:mb-8">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -663,10 +707,51 @@ export default function App() {
                 </button>
               </div>
             </div>
+
+            {/* History Section */}
+            {history.length > 0 && (
+              <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+                <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <History className="w-4 h-4 sm:w-5 sm:h-5 text-[#1DA1F2]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold">Riwayat</h2>
+                    <p className="text-xs sm:text-sm text-gray-400">Thread yang pernah dibuat</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {history.map((item) => (
+                    <div 
+                      key={item.id}
+                      onClick={() => loadFromHistory(item)}
+                      className="group p-3 sm:p-4 bg-gray-50 hover:bg-gray-100 rounded-xl sm:rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-200 relative"
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <p className="text-xs sm:text-sm font-medium text-gray-700 line-clamp-2 pr-6">
+                          {item.topic}
+                        </p>
+                        <button 
+                          onClick={(e) => deleteHistoryItem(e, item.id)}
+                          className="absolute top-3 right-3 p-1 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </button>
+                      </div>
+                      <div className="mt-2 flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                        <Clock className="w-3 h-3" />
+                        {new Date(item.timestamp).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </aside>
 
           {/* Main Content / Preview */}
-          <section className="lg:col-span-7 space-y-8">
+          <section className="lg:col-span-8 space-y-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
