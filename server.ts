@@ -1,10 +1,7 @@
-export interface ThreadParams {
-  topic: string;
-  tools?: string;
-  cost?: string;
-  steps?: string;
-  tips?: string;
-}
+import express from "express";
+import path from "path";
+import { createServer as createViteServer } from "vite";
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = `Kamu adalah content writer spesialis thread viral untuk platform X (Twitter) dan Threads paling gokil di Indonesia. Gaya bahasamu sangat "anti-AI": tidak kaku, penuh emosi, menggunakan slang yang tepat (tapi tetap sopan), dan punya struktur kalimat yang bervariasi (pendek-panjang).
 
@@ -38,25 +35,82 @@ ATURAN FORMAT:
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.`;
 
-export async function generateThread(params: ThreadParams): Promise<string[]> {
-  try {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    });
+async function startServer() {
+  const app = express();
+  const PORT = 3000;
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to generate thread from server");
+  app.use(express.json());
+
+  // API Route for Gemini Generation
+  app.post("/api/generate", async (req, res) => {
+    const { topic, tools, cost, steps, tips } = req.body;
+    
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "GEMINI_API_KEY is missing in server environment." });
     }
 
-    const data = await response.json();
-    return data.tweets || [];
-  } catch (error) {
-    console.error("Error generating thread:", error);
-    throw error;
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = `BUAT THREAD TENTANG: ${topic}
+
+Informasi tambahan:
+- Tools/produk: ${tools || "N/A"}
+- Estimasi biaya/penghematan: ${cost || "N/A"}
+- Steps: ${steps || "N/A"}
+- Tips: ${tips || "N/A"}`;
+
+    try {
+      const response: GenerateContentResponse = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [{ parts: [{ text: prompt }] }],
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          temperature: 0.8,
+        },
+      });
+
+      const text = response.text || "";
+      
+      // Split into tweets
+      let tweets = text.split("---").map(t => t.trim()).filter(t => t.length > 0);
+      
+      if (tweets.length <= 1) {
+        const numberingRegex = /\n(?=\d+\/)/g;
+        const splitByNumbering = text.split(numberingRegex).map(t => t.trim()).filter(t => t.length > 0);
+        if (splitByNumbering.length > 1) {
+          tweets = splitByNumbering;
+        }
+      }
+
+      if (tweets.length === 0 && text.length > 0) {
+        tweets = [text];
+      }
+
+      res.json({ tweets });
+    } catch (error: any) {
+      console.error("Gemini Error:", error);
+      res.status(500).json({ error: error.message || "Failed to generate thread" });
+    }
+  });
+
+  // Vite middleware for development
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
   }
+
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 }
+
+startServer();
