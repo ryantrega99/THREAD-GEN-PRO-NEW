@@ -58,9 +58,25 @@ const PORT = 3000;
 
 app.use(express.json());
 
+// Simple in-memory cache
+const cache = new Map<string, { data: any, timestamp: number }>();
+const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+
 // API Route for Gemini Generation
 app.post("/api/generate", async (req, res) => {
   const { topic, tone = 'SANTAI' } = req.body;
+  
+  if (!topic || typeof topic !== 'string') {
+    return res.status(400).json({ error: "Topik harus diisi." });
+  }
+  
+  // Check Cache
+  const cacheKey = `${topic.toLowerCase().trim()}_${tone}`;
+  const cached = cache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
+    console.log(`Serving from cache: ${cacheKey}`);
+    return res.json(cached.data);
+  }
   
   const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
   if (!apiKey || apiKey === "TODO" || apiKey === "YOUR_API_KEY") {
@@ -154,7 +170,13 @@ Pastikan gaya bahasanya sangat natural, anti-AI, dan perhatikan penggunaan spasi
       };
     }
 
-    res.json({ tweets, booster });
+    const result = { tweets, booster };
+    
+    // Store in cache
+    const cacheKey = `${topic.toLowerCase().trim()}_${tone}`;
+    cache.set(cacheKey, { data: result, timestamp: Date.now() });
+    
+    res.json(result);
   } catch (error: any) {
     console.error("Gemini Error:", error);
     res.status(500).json({ error: error.message || "Gagal generate thread." });
