@@ -40,10 +40,6 @@ export default function App() {
   
   const [params, setParams] = useState<ThreadParams>({
     topic: '',
-    tools: '',
-    cost: '',
-    steps: '',
-    tips: ''
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [thread, setThread] = useState<string[]>([]);
@@ -104,7 +100,7 @@ export default function App() {
   };
 
   const reset = () => {
-    setParams({ topic: '', tools: '', cost: '', steps: '', tips: '' });
+    setParams({ topic: '' });
     setThread([]);
     setError(null);
   };
@@ -645,58 +641,6 @@ export default function App() {
                     className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all min-h-[120px] resize-none outline-none font-medium placeholder:text-gray-300"
                     value={params.topic}
                     onChange={(e) => setParams({...params, topic: e.target.value})}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1 flex items-center gap-1.5">
-                      <Wrench className="w-3 h-3" /> Tools
-                    </label>
-                    <input 
-                      type="text"
-                      placeholder="e.g. VS Code"
-                      className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all outline-none font-medium placeholder:text-gray-300"
-                      value={params.tools}
-                      onChange={(e) => setParams({...params, tools: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1 flex items-center gap-1.5">
-                      <Wallet className="w-3 h-3" /> Budget
-                    </label>
-                    <input 
-                      type="text"
-                      placeholder="e.g. Gratis"
-                      className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all outline-none font-medium placeholder:text-gray-300"
-                      value={params.cost}
-                      onChange={(e) => setParams({...params, cost: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1 flex items-center gap-1.5">
-                    <ListOrdered className="w-3 h-3" /> Langkah-langkah
-                  </label>
-                  <textarea 
-                    placeholder="Pisahkan dengan koma atau baris baru..."
-                    className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all min-h-[100px] resize-none outline-none font-medium placeholder:text-gray-300"
-                    value={params.steps}
-                    onChange={(e) => setParams({...params, steps: e.target.value})}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1 flex items-center gap-1.5">
-                    <Lightbulb className="w-3 h-3" /> Tips Rahasia
-                  </label>
-                  <input 
-                    type="text"
-                    placeholder="Sesuatu yang jarang orang tahu..."
-                    className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-2xl transition-all outline-none font-medium placeholder:text-gray-300"
-                    value={params.tips}
-                    onChange={(e) => setParams({...params, tips: e.target.value})}
                   />
                 </div>
 

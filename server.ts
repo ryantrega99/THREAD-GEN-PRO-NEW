@@ -8,25 +8,26 @@ MISI UTAMA: Buat thread yang terasa ditulis oleh manusia asli yang ahli di bidan
 
 GAYA PENULISAN (HUMAN-LIKE):
 - Gunakan bahasa gaul internet Indonesia yang natural (gak, udah, beneran, asli, parah, jujurly, sbnrnya).
-- JANGAN gunakan kata 'lo' atau 'gue'. Gunakan 'kamu/aku' atau 'kalian/ita' biar lebih sopan tapi tetep santai.
+- JANGAN gunakan kata 'lo' atau 'gue'. Gunakan 'kamu/aku' atau 'kalian/kita' biar lebih sopan tapi tetep santai.
 - Hindari gaya bahasa AI yang terlalu bersemangat atau penuh kata sifat lebay (e.g., "luar biasa", "revolusioner", "keajaiban").
 - Tulis seolah-olah kamu lagi cerita ke temen di tongkrongan. Ada jeda, ada opini pribadi, ada sedikit "curhat" atau pengakuan jujur.
 - Gunakan variasi panjang kalimat. Jangan semuanya template.
 - Boleh pakai singkatan umum (HP, PC, dll).
 - Gunakan transisi natural: "Btw", "Nah", "Gini deh", "Bayangin".
+- PERHATIKAN SPASI DAN ENTER: Jangan numpuk teksnya. Kasih enter yang pas biar enak dibaca di HP.
 
-STRUKTUR THREAD (MINIMAL 7-10 TWEET/POST):
+STRUKTUR THREAD (MINIMAL 8-12 TWEET/POST):
 1. Hook (Post 1): Harus "menghentak". Gunakan angka, kontroversi ringan, atau janji hasil yang nyata. Hindari kata "Halo sobat X".
 2. Story/Problem (Post 2): Ceritakan masalah yang sering dihadapi audiens dengan gaya relatable.
 3. Solution Overview (Post 3): Kenapa cara ini beda dari yang lain.
 4. Detail/Tutorial (Post 4-7): Berikan daging (value). Gunakan bullet points, tapi jangan terlalu kaku. Masukkan opini pribadi atau "insider tips".
-5. Hidden Gems (Post 8): Sesuatu yang jarang orang tahu.
-6. Summary (Post 9): Rangkuman singkat yang actionable.
-7. Rekomendasi Produk & CTA (Post 10): 
-   - WAJIB sertakan minimal 3 rekomendasi barang/produk terkait topik ini.
-   - Gaya bahasa: "Soft sell" banget. Seolah-olah kamu pakai sendiri dan beneran suka.
-   - Contoh: "Btw, banyak yang nanya spill barangnya. Gue pake ini sih: [Nama Produk] karena [Alasan Jujur]. Cek aja sendiri."
-   - Jangan pakai link placeholder jika tidak ada, cukup deskripsi produk yang menggoda.
+5. Tools & Budget (Post 8): Sebutkan tools yang dipakai dan estimasi biayanya (meskipun user gak kasih input, kamu harus riset/asumsikan yang paling masuk akal).
+6. Langkah-langkah (Post 9): Step-by-step ringkas tapi jelas.
+7. Tips Rahasia (Post 10): Sesuatu yang jarang orang tahu (Hidden Gems).
+8. Rekomendasi Link Shopee (Post 11): 
+   - WAJIB berikan minimal 2-3 link Shopee (gunakan format: shope.ee/xxxx atau link deskriptif).
+   - Gaya bahasa: "Spill barangnya di sini ya, beneran kepake banget: [Nama Produk] -> [Link]".
+9. Summary & CTA (Post 12): Rangkuman singkat yang actionable.
 
 ATURAN FORMAT:
 - Setiap post maksimal ~280 karakter (aman untuk X & Threads).
@@ -41,22 +42,27 @@ app.use(express.json());
 
 // API Route for Gemini Generation
 app.post("/api/generate", async (req, res) => {
-  const { topic, tools, cost, steps, tips } = req.body;
+  const { topic } = req.body;
   
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error("GEMINI_API_KEY is missing.");
-    return res.status(500).json({ error: "API Key belum dikonfigurasi di Vercel." });
+  const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
+  if (!apiKey || apiKey === "TODO") {
+    console.error("GEMINI_API_KEY is missing or invalid.");
+    return res.status(500).json({ 
+      error: "API Key tidak ditemukan atau tidak valid. Pastikan GEMINI_API_KEY sudah diset di Environment Variables Vercel atau Settings AI Studio." 
+    });
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const prompt = `BUAT THREAD TENTANG: ${topic}
+  const prompt = `BUAT THREAD VIRAL TENTANG: ${topic}
 
-Informasi tambahan:
-- Tools/produk: ${tools || "N/A"}
-- Estimasi biaya/penghematan: ${cost || "N/A"}
-- Steps: ${steps || "N/A"}
-- Tips: ${tips || "N/A"}`;
+Tugasmu:
+1. Riset secara mandiri tools apa yang paling cocok untuk topik ini.
+2. Hitung estimasi budget yang realistis.
+3. Buat langkah-langkah (steps) yang praktis.
+4. Temukan tips rahasia (hidden gems) yang jarang orang tahu.
+5. Berikan rekomendasi link Shopee yang relevan (gunakan link shope.ee/ dummy atau format yang meyakinkan).
+
+Pastikan gaya bahasanya sangat natural, anti-AI, dan perhatikan penggunaan spasi/enter agar tidak rapat-rapat.`;
 
   try {
     const response: GenerateContentResponse = await ai.models.generateContent({
