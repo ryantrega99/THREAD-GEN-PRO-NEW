@@ -35,23 +35,23 @@ ATURAN FORMAT:
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.`;
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+const app = express();
+const PORT = 3000;
 
-  app.use(express.json());
+app.use(express.json());
 
-  // API Route for Gemini Generation
-  app.post("/api/generate", async (req, res) => {
-    const { topic, tools, cost, steps, tips } = req.body;
-    
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "GEMINI_API_KEY is missing in server environment." });
-    }
+// API Route for Gemini Generation
+app.post("/api/generate", async (req, res) => {
+  const { topic, tools, cost, steps, tips } = req.body;
+  
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY is missing in environment variables.");
+    return res.status(500).json({ error: "Konfigurasi API Key di Vercel belum diset. Silakan cek Environment Variables." });
+  }
 
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `BUAT THREAD TENTANG: ${topic}
+  const ai = new GoogleGenAI({ apiKey });
+  const prompt = `BUAT THREAD TENTANG: ${topic}
 
 Informasi tambahan:
 - Tools/produk: ${tools || "N/A"}
@@ -59,41 +59,42 @@ Informasi tambahan:
 - Steps: ${steps || "N/A"}
 - Tips: ${tips || "N/A"}`;
 
-    try {
-      const response: GenerateContentResponse = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [{ parts: [{ text: prompt }] }],
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          temperature: 0.8,
-        },
-      });
+  try {
+    const response: GenerateContentResponse = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: [{ parts: [{ text: prompt }] }],
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.8,
+      },
+    });
 
-      const text = response.text || "";
-      
-      // Split into tweets
-      let tweets = text.split("---").map(t => t.trim()).filter(t => t.length > 0);
-      
-      if (tweets.length <= 1) {
-        const numberingRegex = /\n(?=\d+\/)/g;
-        const splitByNumbering = text.split(numberingRegex).map(t => t.trim()).filter(t => t.length > 0);
-        if (splitByNumbering.length > 1) {
-          tweets = splitByNumbering;
-        }
+    const text = response.text || "";
+    
+    // Split into tweets
+    let tweets = text.split("---").map(t => t.trim()).filter(t => t.length > 0);
+    
+    if (tweets.length <= 1) {
+      const numberingRegex = /\n(?=\d+\/)/g;
+      const splitByNumbering = text.split(numberingRegex).map(t => t.trim()).filter(t => t.length > 0);
+      if (splitByNumbering.length > 1) {
+        tweets = splitByNumbering;
       }
-
-      if (tweets.length === 0 && text.length > 0) {
-        tweets = [text];
-      }
-
-      res.json({ tweets });
-    } catch (error: any) {
-      console.error("Gemini Error:", error);
-      res.status(500).json({ error: error.message || "Failed to generate thread" });
     }
-  });
 
-  // Vite middleware for development
+    if (tweets.length === 0 && text.length > 0) {
+      tweets = [text];
+    }
+
+    res.json({ tweets });
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    res.status(500).json({ error: error.message || "Gagal generate thread. Coba lagi nanti." });
+  }
+});
+
+// Middleware setup function
+async function setupServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -104,17 +105,25 @@ Informasi tambahan:
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      // If it's an API request that wasn't caught, return 404
       if (req.path.startsWith("/api/")) {
         return res.status(404).json({ error: "API endpoint not found" });
       }
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
 
-startServer();
+// Only listen if running locally, Vercel will handle the export
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  setupServer().then(() => {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  });
+} else {
+  // On Vercel, we still need to setup the static serving for the production build
+  const distPath = path.join(process.cwd(), "dist");
+  app.use(express.static(distPath));
+}
+
+export default app;

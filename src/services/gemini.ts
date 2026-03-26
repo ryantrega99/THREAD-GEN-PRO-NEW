@@ -49,8 +49,16 @@ export async function generateThread(params: ThreadParams): Promise<string[]> {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to generate thread from server");
+      const errorText = await response.text();
+      let errorMessage = "Gagal generate thread dari server";
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // If not JSON, use the raw text or status
+        errorMessage = `Server Error (${response.status}): ${errorText.substring(0, 100)}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
