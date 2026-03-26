@@ -42,7 +42,7 @@ ATURAN FORMAT:
 
 export async function generateThread(params: ThreadParams): Promise<string[]> {
   // Create instance inside function to ensure we use the latest key and avoid initialization issues
-  const apiKey = process.env.GEMINI_API_KEY || "";
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
   
   if (!apiKey) {
     console.warn("GEMINI_API_KEY is missing. Please check your environment variables.");
