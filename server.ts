@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = `Kamu adalah content writer spesialis thread viral untuk platform X (Twitter) dan Threads paling gokil di Indonesia. Gaya bahasamu sangat "anti-AI": tidak kaku, penuh emosi, menggunakan slang yang tepat (tapi tetap sopan), dan punya struktur kalimat yang bervariasi (pendek-panjang).
@@ -46,8 +45,8 @@ app.post("/api/generate", async (req, res) => {
   
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.error("GEMINI_API_KEY is missing in environment variables.");
-    return res.status(500).json({ error: "Konfigurasi API Key di Vercel belum diset. Silakan cek Environment Variables." });
+    console.error("GEMINI_API_KEY is missing.");
+    return res.status(500).json({ error: "API Key belum dikonfigurasi di Vercel." });
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -70,8 +69,6 @@ Informasi tambahan:
     });
 
     const text = response.text || "";
-    
-    // Split into tweets
     let tweets = text.split("---").map(t => t.trim()).filter(t => t.length > 0);
     
     if (tweets.length <= 1) {
@@ -89,41 +86,44 @@ Informasi tambahan:
     res.json({ tweets });
   } catch (error: any) {
     console.error("Gemini Error:", error);
-    res.status(500).json({ error: error.message || "Gagal generate thread. Coba lagi nanti." });
+    res.status(500).json({ error: error.message || "Gagal generate thread." });
   }
 });
 
-// Middleware setup function
-async function setupServer() {
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", environment: process.env.NODE_ENV });
+});
+
+// Server setup
+async function startApp() {
   if (process.env.NODE_ENV !== "production") {
+    // Dynamic import Vite only in development
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
+    
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Dev server running on http://localhost:${PORT}`);
+    });
   } else {
+    // In production (Vercel), static files are handled by vercel.json
+    // We just serve them as a fallback if needed
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      if (req.path.startsWith("/api/")) {
-        return res.status(404).json({ error: "API endpoint not found" });
-      }
-      res.sendFile(path.join(distPath, "index.html"));
-    });
+    
+    // Only listen if not on Vercel (e.g. local production test)
+    if (!process.env.VERCEL) {
+      app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Prod server running on port ${PORT}`);
+      });
+    }
   }
 }
 
-// Only listen if running locally, Vercel will handle the export
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  setupServer().then(() => {
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  });
-} else {
-  // On Vercel, we still need to setup the static serving for the production build
-  const distPath = path.join(process.cwd(), "dist");
-  app.use(express.static(distPath));
-}
+startApp();
 
 export default app;
