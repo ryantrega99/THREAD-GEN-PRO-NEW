@@ -54,6 +54,21 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
   const [slotsLeft, setSlotsLeft] = useState(3);
   const [history, setHistory] = useState<{id: string, topic: string, thread: string[], tone?: string, booster?: ViralBooster, timestamp: number}[]>([]);
+  const [userApiKey, setUserApiKey] = useState('');
+
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem('threadgen_user_api_key');
+    if (savedApiKey) {
+      setUserApiKey(savedApiKey);
+    }
+  }, []);
+
+  const saveApiKey = (key: string) => {
+    setUserApiKey(key);
+    localStorage.setItem('threadgen_user_api_key', key);
+    if (key) showToast('API Key disimpan!');
+    else showToast('API Key dihapus!');
+  };
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('threadgen_history');
@@ -133,7 +148,7 @@ export default function App() {
     setError(null);
     setBooster(null);
     try {
-      const result = await generateThread(params);
+      const result = await generateThread({ ...params, apiKey: userApiKey });
       if (result.tweets.length === 0) {
         setError("Gagal meracik thread. Coba ganti topik atau detailnya ya!");
       } else {
@@ -664,36 +679,38 @@ export default function App() {
       </AnimatePresence>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('landing')}>
-            <div className="bg-[#1DA1F2] p-2.5 rounded-xl shadow-lg shadow-blue-100">
-              <Twitter className="text-white w-6 h-6" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={() => setView('landing')}>
+            <div className="bg-[#1DA1F2] p-2 sm:p-2.5 rounded-lg sm:rounded-xl shadow-lg shadow-blue-100">
+              <Twitter className="text-white w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase">ThreadGen<span className="text-[#1DA1F2]">Pro</span></span>
+            <span className="text-lg sm:text-xl font-black tracking-tighter uppercase">ThreadGen<span className="text-[#1DA1F2]">Pro</span></span>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-end mr-4">
-              <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Status</span>
-              <span className="text-sm font-bold text-[#1DA1F2]">PRO MEMBER</span>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden sm:flex flex-col items-end mr-2">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</span>
+              <span className="text-xs font-bold text-[#1DA1F2]">PRO MEMBER</span>
             </div>
-            <button 
-              onClick={handleLogout}
-              className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={reset}
-              className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-              title="Reset All"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
-            <div className="h-8 w-[1px] bg-gray-200 mx-2" />
-            <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <button 
+                onClick={handleLogout}
+                className="p-2 sm:p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg sm:rounded-xl transition-all"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+              <button 
+                onClick={reset}
+                className="p-2 sm:p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg sm:rounded-xl transition-all"
+                title="Reset All"
+              >
+                <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+            <div className="hidden sm:block h-8 w-[1px] bg-gray-200 mx-2" />
+            <div className="hidden sm:flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">System Online</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Online</span>
             </div>
           </div>
         </div>
@@ -703,6 +720,40 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
           {/* Sidebar / Form */}
           <aside className="lg:col-span-4 space-y-6 sm:space-y-8">
+            {/* Custom API Key Input (Mobile/Tab Only) */}
+            <div className="lg:hidden bg-white p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex-1 w-full space-y-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Lock className="w-3 h-3 text-[#1DA1F2]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Custom API Key</span>
+                </div>
+                <input 
+                  type="password"
+                  placeholder="Masukkan Gemini API Key Anda (Opsional)"
+                  className="w-full px-4 py-2.5 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-xl outline-none transition-all font-mono text-xs"
+                  value={userApiKey}
+                  onChange={(e) => setUserApiKey(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto pt-1 sm:pt-4">
+                <button 
+                  onClick={() => saveApiKey(userApiKey)}
+                  className="flex-1 sm:flex-none px-6 py-2.5 bg-[#1DA1F2] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all shadow-lg shadow-blue-500/10"
+                >
+                  Simpan
+                </button>
+                {userApiKey && (
+                  <button 
+                    onClick={() => saveApiKey('')}
+                    className="p-2.5 text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                    title="Hapus Key"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
               <div className="flex items-center gap-3 mb-6 sm:mb-8">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -886,7 +937,41 @@ export default function App() {
           </aside>
 
           {/* Main Content / Preview */}
-          <section className="lg:col-span-8 space-y-8">
+          <section className="lg:col-span-8 space-y-6 sm:space-y-8">
+            {/* Custom API Key Input (Desktop Only) */}
+            <div className="hidden lg:flex bg-white p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex-col sm:flex-row items-center gap-4">
+              <div className="flex-1 w-full space-y-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Lock className="w-3 h-3 text-[#1DA1F2]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Custom API Key</span>
+                </div>
+                <input 
+                  type="password"
+                  placeholder="Masukkan Gemini API Key Anda (Opsional)"
+                  className="w-full px-4 py-2.5 bg-gray-50 border-2 border-transparent focus:border-[#1DA1F2] focus:bg-white rounded-xl outline-none transition-all font-mono text-xs"
+                  value={userApiKey}
+                  onChange={(e) => setUserApiKey(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto pt-1 sm:pt-4">
+                <button 
+                  onClick={() => saveApiKey(userApiKey)}
+                  className="flex-1 sm:flex-none px-6 py-2.5 bg-[#1DA1F2] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all shadow-lg shadow-blue-500/10"
+                >
+                  Simpan
+                </button>
+                {userApiKey && (
+                  <button 
+                    onClick={() => saveApiKey('')}
+                    className="p-2.5 text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                    title="Hapus Key"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">

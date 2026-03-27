@@ -1,6 +1,7 @@
 export interface ThreadParams {
   topic: string;
   tone?: 'SANTAI' | 'EDUKATIF' | 'VIRAL' | 'STORYTELLING' | 'HOT TAKE';
+  apiKey?: string;
 }
 
 const SYSTEM_INSTRUCTION = `Kamu adalah content writer spesialis thread viral untuk platform X (Twitter) dan Threads paling gokil di Indonesia. Gaya bahasamu sangat "anti-AI": tidak kaku, penuh emosi, menggunakan slang yang tepat (tapi tetap sopan), dan punya struktur kalimat yang bervariasi (pendek-panjang).

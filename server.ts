@@ -64,7 +64,7 @@ const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 
 // API Route for Gemini Generation
 app.post("/api/generate", async (req, res) => {
-  const { topic, tone = 'SANTAI' } = req.body;
+  const { topic, tone = 'SANTAI', apiKey: userApiKey } = req.body;
   
   if (!topic || typeof topic !== 'string') {
     return res.status(400).json({ error: "Topik harus diisi." });
@@ -78,7 +78,12 @@ app.post("/api/generate", async (req, res) => {
     return res.json(cached.data);
   }
   
-  const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
+  // Use user-provided API key if available, otherwise fallback to system key
+  let apiKey = (userApiKey || "").trim();
+  if (!apiKey) {
+    apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY || "").trim();
+  }
+  
   if (!apiKey || apiKey === "TODO" || apiKey === "YOUR_API_KEY") {
     console.error("GEMINI_API_KEY is missing or invalid.");
     return res.status(500).json({ 
