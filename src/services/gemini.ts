@@ -72,7 +72,9 @@ ATURAN FORMAT & SPASI (SANGAT KETAT):
   * Karakter biasa = 1.
   * Emoji = 2 karakter.
   * URL (link shope.ee/dll) = 23 karakter.
-- Jika melebihi 280 karakter, potong dan susun ulang kalimatnya sampai tepat di bawah 280 karakter.
+- DILARANG KERAS memotong di tengah kata. Setiap tweet harus berakhir di kata yang sudah lengkap.
+- Jika melebihi 280 karakter, potong di spasi terakhir sebelum batas 280, dan pindahkan kata/kalimat sisanya ke awal tweet berikutnya (setelah numbering).
+- Jangan pernah menampilkan tweet yang melebihi 280 karakter.
 - Gunakan format "baris per baris" (line by line). Jangan buat paragraf panjang.
 - Gunakan double enter untuk memisahkan setiap poin atau kalimat agar teks terasa "bernafas" dan sangat enak dibaca di layar HP.
 - Numbering otomatis (1/, 2/, 3/, dst).

@@ -58,15 +58,71 @@ const calculateTwitterLength = (text: string) => {
   return length;
 };
 
-// Helper to truncate text to fit Twitter length
-const truncateToTwitterLength = (text: string, maxLength: number = 280) => {
-  if (calculateTwitterLength(text) <= maxLength) return text;
-  
-  let truncated = text;
-  while (calculateTwitterLength(truncated) > maxLength && truncated.length > 0) {
-    truncated = truncated.slice(0, -1);
+// Smart redistribution logic to ensure tweets stay under 280 chars and don't cut words
+const redistributeTweets = (tweets: string[], maxLength: number = 280) => {
+  const result: string[] = [];
+  let currentOverflow = "";
+
+  for (let i = 0; i < tweets.length; i++) {
+    let tweetText = tweets[i];
+    
+    // Prepend any overflow from the previous tweet
+    if (currentOverflow) {
+      const numberingMatch = tweetText.match(/^(\d+\/\s*)/);
+      if (numberingMatch) {
+        const numbering = numberingMatch[1];
+        const content = tweetText.slice(numbering.length);
+        tweetText = `${numbering}${currentOverflow} ${content}`;
+      } else {
+        tweetText = `${currentOverflow} ${tweetText}`;
+      }
+      currentOverflow = "";
+    }
+
+    if (calculateTwitterLength(tweetText) <= maxLength) {
+      result.push(tweetText);
+    } else {
+      // Truncate at word boundary
+      let truncated = tweetText;
+      while (calculateTwitterLength(truncated) > maxLength && truncated.length > 0) {
+        const lastSpaceIndex = truncated.lastIndexOf(" ");
+        if (lastSpaceIndex === -1) {
+          // No space found, cut at character (fallback)
+          truncated = truncated.slice(0, -1);
+        } else {
+          truncated = truncated.slice(0, lastSpaceIndex);
+        }
+      }
+      
+      result.push(truncated.trim());
+      currentOverflow = tweetText.slice(truncated.length).trim();
+    }
   }
-  return truncated;
+
+  // Handle remaining overflow
+  while (currentOverflow) {
+    const nextIndex = result.length + 1;
+    let tweetText = `${nextIndex}/ ${currentOverflow}`;
+    
+    if (calculateTwitterLength(tweetText) <= maxLength) {
+      result.push(tweetText);
+      currentOverflow = "";
+    } else {
+      let truncated = tweetText;
+      while (calculateTwitterLength(truncated) > maxLength && truncated.length > 0) {
+        const lastSpaceIndex = truncated.lastIndexOf(" ");
+        if (lastSpaceIndex === -1) {
+          truncated = truncated.slice(0, -1);
+        } else {
+          truncated = truncated.slice(0, lastSpaceIndex);
+        }
+      }
+      result.push(truncated.trim());
+      currentOverflow = tweetText.slice(truncated.length).trim();
+    }
+  }
+
+  return result;
 };
 
 export default function App() {
@@ -205,8 +261,8 @@ export default function App() {
           generateCoverImage(imagePrompt);
         }
 
-        // Ensure all tweets are within 280 characters using Twitter counting rules
-        const sanitizedTweets = (result.tweets || []).map(t => truncateToTwitterLength(t, 280));
+        // Ensure all tweets are within 280 characters using Twitter counting rules and word boundaries
+        const sanitizedTweets = redistributeTweets(result.tweets || [], 280);
         setThread(sanitizedTweets);
         setBooster(result.booster || null);
         saveToHistory(params.topic, sanitizedTweets, params.tone, result.booster);
