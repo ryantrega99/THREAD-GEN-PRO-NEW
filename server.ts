@@ -8,7 +8,7 @@ MISI UTAMA: Buat thread yang terasa ditulis oleh manusia asli yang ahli di bidan
 
 GAYA PENULISAN (HUMAN-LIKE):
 - Gunakan bahasa gaul internet Indonesia yang natural (gak, udah, beneran, asli, parah, jujurly, sbnrnya).
-- JANGAN gunakan kata 'lo' atau 'gue'. Gunakan 'kamu/aku' atau 'kalian/kita' biar lebih sopan tapi tetep santai.
+- JANGAN gunakan kata 'lo' atau 'gue' KECUALI jika tone yang dipilih adalah "CAREER HACK". Untuk tone lain, gunakan 'kamu/aku' atau 'kalian/kita' biar lebih sopan tapi tetep santai.
 - Hindari gaya bahasa AI yang terlalu bersemangat atau penuh kata sifat lebay (e.g., "luar biasa", "revolusioner", "keajaiban").
 - Tulis seolah-olah kamu lagi cerita ke temen di tongkrongan. Ada jeda, ada opini pribadi, ada sedikit "curhat" atau pengakuan jujur.
 - Gunakan variasi panjang kalimat. Jangan semuanya template.
@@ -18,9 +18,12 @@ GAYA PENULISAN (HUMAN-LIKE):
 
 PANJANG THREAD (WAJIB DIPATUHI):
 Sesuaikan jumlah tweet berdasarkan pilihan user:
-- PENDEK: 3 tweet (hook + 1 isi + CTA)
-- SEDANG: 5 tweet (hook + 3 isi + CTA)
-- PANJANG: 10 tweet (hook + 8 isi + CTA)
+- PENDEK: 3 tweet
+  → Struktur: Situasi/Hook + Solusi langsung + Insight penutup
+- SEDANG: 5 tweet (default)
+  → Struktur: Situasi/Hook + Kenapa ini masalah + Solusi bernomor (dibagi 2 tweet) + Kenapa works + Insight penutup
+- PANJANG: 10 tweet
+  → Struktur: Situasi/Hook + Kenapa ini masalah + Solusi bernomor (dibagi 4 tweet) + Kenapa works + Contoh nyata + Kemungkinan terburuk vs terbaik + Bonus tip + Pertanyaan ke audiens + CTA follow
 
 Jika user tidak menyebut panjang, gunakan SEDANG (5 tweet).
 
@@ -37,6 +40,15 @@ Jika user memilih tone "INFLUENCER", gunakan gaya berikut:
 - Tweet terakhir selalu diakhiri dengan pertanyaan ke audiens untuk memicu interaksi.
 - Boleh sisipkan 1 soft CTA follow di tweet terakhir (misal: "Follow @username buat tips harian kayak gini").
 - Tone tegas tapi tetap approachable, seperti teman yang lebih berpengalaman (mentor-like).
+
+TONE KHUSUS - CAREER HACK:
+Jika user memilih tone "CAREER HACK", gunakan gaya berikut:
+- Buka dengan situasi jebakan yang relatable (e.g., "Lo kira rajin lembur bakal bikin lo dipromosi? Salah besar.").
+- Langsung kasih solusi bernomor dengan alasan logis.
+- Pakai data/angka spesifik untuk memperkuat argumen.
+- Framing win-win (menguntungkan karyawan & perusahaan).
+- Bahasa campuran Indonesia-Inggris natural (Indoglish). Gunakan kata seperti "lo/gue", "confident", "deliver", "market rate", "value", "impact".
+- Akhiri dengan insight singkat + perbandingan "Kemungkinan Terburuk vs Terbaik".
 
 STRUKTUR THREAD (UMUM):
 1. Hook (Post 1): Harus "menghentak". Gunakan angka, kontroversi ringan, atau janji hasil yang nyata. Hindari kata "Halo sobat X".
@@ -135,7 +147,8 @@ app.post("/api/generate", async (req, res) => {
     'VIRAL': 'Fokus pada hook yang provokatif. Kalimat pertama harus sangat memancing klik (clickbait yang berkualitas).',
     'STORYTELLING': 'Gunakan narasi personal yang dramatis. Tulis dari sudut pandang orang pertama (pengalaman pribadi).',
     'HOT TAKE': 'Berikan opini yang berani dan kontroversi yang terukur. Gunakan sudut pandang yang tidak umum atau melawan arus.',
-    'INFLUENCER': 'Gunakan gaya mentor yang tegas tapi approachable. Fokus pada win-win solution, data spesifik, dan akhiri dengan pertanyaan interaktif.'
+    'INFLUENCER': 'Gunakan gaya mentor yang tegas tapi approachable. Fokus pada win-win solution, data spesifik, dan akhiri dengan pertanyaan interaktif.',
+    'CAREER HACK': 'Gunakan gaya profesional yang blak-blakan. Pakai bahasa Indoglish (lo/gue, confident, deliver, market rate). Buka dengan situasi jebakan, kasih solusi logis dengan data, framing win-win, dan akhiri dengan perbandingan worst vs best case.'
   };
 
   const lengthTweetCount = {

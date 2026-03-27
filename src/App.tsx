@@ -841,7 +841,7 @@ export default function App() {
                 <div className="space-y-2">
                   <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pilih Tone</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {(['SANTAI', 'EDUKATIF', 'VIRAL', 'STORYTELLING', 'HOT TAKE', 'INFLUENCER'] as const).map((t) => (
+                    {(['SANTAI', 'EDUKATIF', 'VIRAL', 'STORYTELLING', 'HOT TAKE', 'INFLUENCER', 'CAREER HACK'] as const).map((t) => (
                       <button
                         key={t}
                         onClick={() => setParams({ ...params, tone: t })}
