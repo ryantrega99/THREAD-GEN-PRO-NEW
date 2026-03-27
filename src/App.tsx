@@ -1135,7 +1135,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="space-y-6 relative">
+            <div className="space-y-12 sm:space-y-16 relative">
               <AnimatePresence mode="popLayout">
                 {error && (
                   <motion.div 
@@ -1221,7 +1221,7 @@ export default function App() {
                         )}
                       </div>
                       <div className="flex-1 pt-1 sm:pt-2 pb-12 sm:pb-0">
-                        <p className="whitespace-pre-wrap text-sm sm:text-[17px] leading-[1.6] text-gray-700 font-medium">
+                        <p className="whitespace-pre-wrap text-[16px] sm:text-[19px] leading-[1.8] text-gray-800 font-medium tracking-tight">
                           {tweet}
                         </p>
 
