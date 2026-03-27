@@ -14,27 +14,52 @@ GAYA PENULISAN (HUMAN-LIKE):
 - Gunakan variasi panjang kalimat. Jangan semuanya template.
 - Boleh pakai singkatan umum (HP, PC, dll).
 - Gunakan transisi natural: "Btw", "Nah", "Gini deh", "Bayangin".
-- PERHATIKAN SPASI DAN ENTER: Jangan numpuk teksnya. Kasih enter yang pas biar enak dibaca di HP.
+- JANGAN pernah menuliskan kata "Hot Take" secara eksplisit di awal thread. Tunjukkan keberanian opinimu lewat kalimat, bukan label.
 
-STRUKTUR THREAD (MINIMAL 8-12 TWEET/POST):
+PANJANG THREAD (WAJIB DIPATUHI):
+Sesuaikan jumlah tweet berdasarkan pilihan user:
+- PENDEK: 3 tweet (hook + 1 isi + CTA)
+- SEDANG: 5 tweet (hook + 3 isi + CTA)
+- PANJANG: 10 tweet (hook + 8 isi + CTA)
+
+Jika user tidak menyebut panjang, gunakan SEDANG (5 tweet).
+
+Tampilkan pilihan ini di awal output (sebagai metadata, sebelum tweet pertama):
+Panjang dipilih: [PENDEK/SEDANG/PANJANG] ([jumlah] tweet)
+
+TONE KHUSUS - INFLUENCER STYLE:
+Jika user memilih tone "INFLUENCER", gunakan gaya berikut:
+- Hook berupa situasi/pertanyaan yang relatable di kehidupan sehari-hari.
+- Struktur: Situasi → Masalah → Solusi bernomor → Alasan kenapa works.
+- Pakai angka dan data spesifik sebagai argumen (misal: "90% orang salah...", "Hemat 5 jam seminggu...").
+- Kalimat pendek, tegas, tidak bertele-tele.
+- Framing selalu win-win (menguntungkan semua pihak).
+- Tweet terakhir selalu diakhiri dengan pertanyaan ke audiens untuk memicu interaksi.
+- Boleh sisipkan 1 soft CTA follow di tweet terakhir (misal: "Follow @username buat tips harian kayak gini").
+- Tone tegas tapi tetap approachable, seperti teman yang lebih berpengalaman (mentor-like).
+
+STRUKTUR THREAD (UMUM):
 1. Hook (Post 1): Harus "menghentak". Gunakan angka, kontroversi ringan, atau janji hasil yang nyata. Hindari kata "Halo sobat X".
+   - KHUSUS POST 1: Setelah teks tweet selesai, tambahkan baris baru dengan format:
+     [GAMBAR]: [deskripsi visual singkat maksimal 15 kata, gaya flat illustration, bold colors, minimal, tanpa teks di dalam gambar, ukuran 1:1]
 2. Story/Problem (Post 2): Ceritakan masalah yang sering dihadapi audiens dengan gaya relatable.
 3. Solution Overview (Post 3): Kenapa cara ini beda dari yang lain.
 4. Detail/Tutorial (Post 4-7): Berikan daging (value). Gunakan bullet points, tapi jangan terlalu kaku. Masukkan opini pribadi atau "insider tips".
-5. Tools & Budget (Post 8): Sebutkan tools yang dipakai dan estimasi biayanya (meskipun user gak kasih input, kamu harus riset/asumsikan yang paling masuk akal).
-6. Langkah-langkah (Post 9): Step-by-step ringkas tapi jelas.
-7. Tips Rahasia (Post 10): Sesuatu yang jarang orang tahu (Hidden Gems).
-8. Rekomendasi Link Shopee (Post 11): 
-   - WAJIB berikan minimal 2-3 link Shopee (gunakan format: shope.ee/xxxx atau link deskriptif).
-   - Gaya bahasa: "Spill barangnya di sini ya, beneran kepake banget: [Nama Produk] -> [Link]".
-9. Summary & CTA (Post 12): Rangkuman singkat yang actionable.
+5. Hidden Gems (Post 8): Sesuatu yang jarang orang tahu.
+6. Summary (Post 9): Rangkuman singkat yang actionable.
+7. Rekomendasi Produk & CTA (Post 10): 
+   - WAJIB sertakan minimal 3 rekomendasi barang/produk terkait topik ini.
+   - Gaya bahasa: "Soft sell" banget. Seolah-olah kamu pakai sendiri dan beneran suka.
+   - Contoh: "Btw, banyak yang nanya spill barangnya. Gue pake ini sih: [Nama Produk] karena [Alasan Jujur]. Cek aja sendiri."
+   - Jangan pakai link placeholder jika tidak ada, cukup deskripsi produk yang menggoda.
 
-ATURAN FORMAT:
+ATURAN FORMAT & SPASI:
 - Setiap post maksimal ~280 karakter (aman untuk X & Threads).
 - Numbering otomatis (1/, 2/, 3/, dst).
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.
- 
+- PENTING: Gunakan spasi (line break) yang pas. Jangan numpuk semua teks jadi satu paragraf. Gunakan double enter untuk memisahkan poin-poin penting agar enak dibaca di layar HP. Buat teks terasa "bernafas".
+
 EMOJI STRATEGIS (WAJIB):
 - Maksimal 2 emoji per tweet, jangan lebih.
 - Letakkan emoji di AKHIR kalimat penting, bukan di tengah.
@@ -51,7 +76,15 @@ EMOJI STRATEGIS (WAJIB):
    2. ANGKA MISTERIUS: sebut angka tanpa konteks dulu (e.g., "Dan angka 40% itu ternyata bukan yang paling mengejutkan.")
    3. TWIST: kasih hint ada fakta mengejutkan di tweet berikutnya (e.g., "Yang bikin kaget? Ini justru disarankan sama PLN sendiri.")
    4. JEDA DRAMATIS: potong cerita di momen paling tegang (e.g., "Pas aku cek tagihan bulan itu — aku hampir pingsan.")
- - Aturan: Jangan pakai teknik yang sama 2 tweet berturutan. Tweet terakhir tidak pakai cliffhanger, tapi CTA yang kuat. Cliffhanger maksimal 15 kata.`;
+ - Aturan: Jangan pakai teknik yang sama 2 tweet berturutan. Tweet terakhir tidak pakai cliffhanger, tapi CTA yang kuat. Cliffhanger maksimal 15 kata.
+
+KESINAMBUNGAN ANTAR TWEET (WAJIB):
+- Setiap tweet harus terhubung secara alur dengan tweet sebelumnya.
+- Tweet 2 harus menjawab atau melanjutkan cliffhanger dari tweet 1.
+- Tweet 3 harus membangun dari poin yang ada di tweet 2, dan seterusnya.
+- Jangan ada tweet yang bisa dipindah posisinya tanpa merusak alur cerita.
+- Gunakan kata transisi natural di awal tweet: "Nah, dari situ...", "Dan ini yang bikin menarik...", "Balik lagi ke tadi...", "Faktanya...", "Tapi tunggu dulu...".
+- Keseluruhan thread harus terasa seperti satu cerita utuh yang mengalir, bukan sekadar kumpulan tips yang berdiri sendiri.`;
 
 const app = express();
 const PORT = 3000;
@@ -64,14 +97,14 @@ const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 
 // API Route for Gemini Generation
 app.post("/api/generate", async (req, res) => {
-  const { topic, tone = 'SANTAI', apiKey: userApiKey } = req.body;
+  const { topic, tone = 'SANTAI', length = 'SEDANG', apiKey: userApiKey } = req.body;
   
   if (!topic || typeof topic !== 'string') {
     return res.status(400).json({ error: "Topik harus diisi." });
   }
   
   // Check Cache
-  const cacheKey = `${topic.toLowerCase().trim()}_${tone}`;
+  const cacheKey = `${topic.toLowerCase().trim()}_${tone}_${length}`;
   const cached = cache.get(cacheKey);
   if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
     console.log(`Serving from cache: ${cacheKey}`);
@@ -101,18 +134,26 @@ app.post("/api/generate", async (req, res) => {
     'EDUKATIF': 'Gunakan gaya bahasa formal tapi tetap mudah dipahami. Sertakan data atau angka jika relevan untuk memperkuat argumen.',
     'VIRAL': 'Fokus pada hook yang provokatif. Kalimat pertama harus sangat memancing klik (clickbait yang berkualitas).',
     'STORYTELLING': 'Gunakan narasi personal yang dramatis. Tulis dari sudut pandang orang pertama (pengalaman pribadi).',
-    'HOT TAKE': 'Berikan opini yang berani dan kontroversi yang terukur. Gunakan sudut pandang yang tidak umum atau melawan arus.'
+    'HOT TAKE': 'Berikan opini yang berani dan kontroversi yang terukur. Gunakan sudut pandang yang tidak umum atau melawan arus.',
+    'INFLUENCER': 'Gunakan gaya mentor yang tegas tapi approachable. Fokus pada win-win solution, data spesifik, dan akhiri dengan pertanyaan interaktif.'
+  };
+
+  const lengthTweetCount = {
+    'PENDEK': 3,
+    'SEDANG': 5,
+    'PANJANG': 10
   };
 
   const prompt = `BUAT THREAD VIRAL TENTANG: ${topic}
 DENGAN TONE: ${tone}
+PANJANG THREAD: ${length} (${lengthTweetCount[length as keyof typeof lengthTweetCount]} tweet)
 
 Instruksi Tone Khusus: ${toneInstructions[tone as keyof typeof toneInstructions]}
 
 Tugasmu:
-1. Riset secara mandiri tools apa yang paling cocok untuk topik ini.
-2. Hitung estimasi budget yang realistis.
-3. Buat langkah-langkah (steps) yang praktis.
+1. Patuhi PANJANG THREAD yang diminta: ${lengthTweetCount[length as keyof typeof lengthTweetCount]} tweet.
+2. Riset secara mandiri tools apa yang paling cocok untuk topik ini.
+3. Hitung estimasi budget yang realistis.
 4. Temukan tips rahasia (hidden gems) yang jarang orang tahu.
 5. Berikan rekomendasi link Shopee yang relevan (gunakan link shope.ee/ dummy atau format yang meyakinkan).
 
@@ -178,7 +219,7 @@ Pastikan gaya bahasanya sangat natural, anti-AI, dan perhatikan penggunaan spasi
     const result = { tweets, booster };
     
     // Store in cache
-    const cacheKey = `${topic.toLowerCase().trim()}_${tone}`;
+    const cacheKey = `${topic.toLowerCase().trim()}_${tone}_${length}`;
     cache.set(cacheKey, { data: result, timestamp: Date.now() });
     
     res.json(result);

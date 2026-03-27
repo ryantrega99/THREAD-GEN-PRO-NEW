@@ -45,9 +45,12 @@ export default function App() {
   const [params, setParams] = useState<ThreadParams>({
     topic: '',
     tone: 'SANTAI',
+    length: 'SEDANG',
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [thread, setThread] = useState<string[]>([]);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
   const [booster, setBooster] = useState<ViralBooster | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -145,13 +148,29 @@ export default function App() {
   const handleGenerate = async () => {
     if (!params.topic) return;
     setIsGenerating(true);
+    setIsGeneratingImage(false);
     setError(null);
     setBooster(null);
+    setCoverImage(null);
+    
     try {
       const result = await generateThread({ ...params, apiKey: userApiKey });
       if (result.tweets.length === 0) {
         setError("Gagal meracik thread. Coba ganti topik atau detailnya ya!");
       } else {
+        // Look for [GAMBAR]: in the first tweet
+        let firstTweet = result.tweets[0];
+        const imageMatch = firstTweet.match(/\[GAMBAR\]:\s*(.*)/i);
+        
+        if (imageMatch) {
+          const imagePrompt = imageMatch[1].trim();
+          // Remove the [GAMBAR] line from the tweet text
+          result.tweets[0] = firstTweet.replace(/\[GAMBAR\]:.*\n?/i, '').trim();
+          
+          // Start image generation
+          generateCoverImage(imagePrompt);
+        }
+
         setThread(result.tweets);
         setBooster(result.booster || null);
         saveToHistory(params.topic, result.tweets, params.tone, result.booster);
@@ -168,6 +187,48 @@ export default function App() {
     }
   };
 
+  const generateCoverImage = async (prompt: string) => {
+    setIsGeneratingImage(true);
+    try {
+      const apiKey = (userApiKey || process.env.GEMINI_API_KEY || "").trim();
+      if (!apiKey) return;
+
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey });
+      
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-image',
+        contents: {
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
+        },
+        config: {
+          imageConfig: {
+            aspectRatio: "1:1",
+          },
+        },
+      });
+
+      const candidate = response.candidates?.[0];
+      if (candidate?.content?.parts) {
+        for (const part of candidate.content.parts) {
+          if (part.inlineData) {
+            const base64Data = part.inlineData.data;
+            setCoverImage(`data:image/png;base64,${base64Data}`);
+            break;
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to generate image:", err);
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   const copyToClipboard = (text: string, index: number) => {
     navigator.clipboard.writeText(text);
     setCopiedIndex(index);
@@ -175,8 +236,9 @@ export default function App() {
   };
 
   const reset = () => {
-    setParams({ topic: '', tone: 'SANTAI' });
+    setParams({ topic: '', tone: 'SANTAI', length: 'SEDANG' });
     setThread([]);
+    setCoverImage(null);
     setBooster(null);
     setError(null);
   };
@@ -778,8 +840,8 @@ export default function App() {
 
                 <div className="space-y-2">
                   <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pilih Tone</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(['SANTAI', 'EDUKATIF', 'VIRAL', 'STORYTELLING', 'HOT TAKE'] as const).map((t) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {(['SANTAI', 'EDUKATIF', 'VIRAL', 'STORYTELLING', 'HOT TAKE', 'INFLUENCER'] as const).map((t) => (
                       <button
                         key={t}
                         onClick={() => setParams({ ...params, tone: t })}
@@ -790,6 +852,28 @@ export default function App() {
                         }`}
                       >
                         {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Panjang Thread</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['PENDEK', 'SEDANG', 'PANJANG'] as const).map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => setParams({ ...params, length: l })}
+                        className={`py-2 px-1 rounded-xl text-[10px] font-bold transition-all border-2 ${
+                          params.length === l 
+                            ? 'border-[#1DA1F2] bg-[#1DA1F2]/5 text-[#1DA1F2]' 
+                            : 'border-gray-100 text-gray-400 hover:border-gray-200'
+                        }`}
+                      >
+                        {l}
+                        <span className="block text-[8px] opacity-60">
+                          {l === 'PENDEK' ? '3 Tweet' : l === 'SEDANG' ? '5 Tweet' : '10 Tweet'}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -1043,15 +1127,29 @@ export default function App() {
                     transition={{ delay: index * 0.05 }}
                     className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-gray-100 group relative hover:border-[#1DA1F2]/30 transition-all"
                   >
-                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
+                    <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-10">
                       <button 
                         onClick={() => {
                           copyToClipboard(tweet, index);
                           showToast(`Tweet ${index + 1} disalin!`);
                         }}
-                        className="p-2 sm:p-3 bg-gray-50 hover:bg-[#1DA1F2] hover:text-white rounded-xl sm:rounded-2xl transition-all"
+                        className={`min-w-[44px] min-h-[44px] flex items-center justify-center gap-2 px-4 rounded-xl sm:rounded-2xl transition-all shadow-lg ${
+                          copiedIndex === index 
+                            ? 'bg-green-500 text-white' 
+                            : 'bg-[#1DA1F2] text-white hover:scale-105 active:scale-95'
+                        }`}
                       >
-                        {copiedIndex === index ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : <Copy className="w-3 h-3 sm:w-4 sm:h-4" />}
+                        {copiedIndex === index ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Tersalin!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Salin</span>
+                          </>
+                        )}
                       </button>
                     </div>
                     
@@ -1064,10 +1162,29 @@ export default function App() {
                           <div className="w-[1.5px] sm:w-[2px] flex-1 bg-gradient-to-b from-gray-100 to-transparent rounded-full"></div>
                         )}
                       </div>
-                      <div className="flex-1 pt-1 sm:pt-2">
+                      <div className="flex-1 pt-1 sm:pt-2 pb-12 sm:pb-0">
                         <p className="whitespace-pre-wrap text-sm sm:text-[17px] leading-[1.6] text-gray-700 font-medium">
                           {tweet}
                         </p>
+
+                        {index === 0 && (coverImage || isGeneratingImage) && (
+                          <div className="mt-6 rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 aspect-square max-w-[400px]">
+                            {isGeneratingImage ? (
+                              <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-gray-400">
+                                <Loader2 className="w-8 h-8 animate-spin text-[#1DA1F2]" />
+                                <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Meracik Visual...</span>
+                              </div>
+                            ) : (
+                              <img 
+                                src={coverImage!} 
+                                alt="Thread Cover" 
+                                className="w-full h-full object-cover"
+                                referrerPolicy="no-referrer"
+                              />
+                            )}
+                          </div>
+                        )}
+
                         <div className="mt-6 flex items-center gap-4">
                           <div className={`h-1 flex-1 rounded-full bg-gray-100 overflow-hidden`}>
                             <div 

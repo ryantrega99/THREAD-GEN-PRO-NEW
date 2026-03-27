@@ -1,6 +1,7 @@
 export interface ThreadParams {
   topic: string;
-  tone?: 'SANTAI' | 'EDUKATIF' | 'VIRAL' | 'STORYTELLING' | 'HOT TAKE';
+  tone?: 'SANTAI' | 'EDUKATIF' | 'VIRAL' | 'STORYTELLING' | 'HOT TAKE' | 'INFLUENCER';
+  length?: 'PENDEK' | 'SEDANG' | 'PANJANG';
   apiKey?: string;
 }
 
@@ -18,7 +19,29 @@ GAYA PENULISAN (HUMAN-LIKE):
 - Gunakan transisi natural: "Btw", "Nah", "Gini deh", "Bayangin".
 - JANGAN pernah menuliskan kata "Hot Take" secara eksplisit di awal thread. Tunjukkan keberanian opinimu lewat kalimat, bukan label.
 
-STRUKTUR THREAD (MINIMAL 7-10 TWEET/POST):
+PANJANG THREAD (WAJIB DIPATUHI):
+Sesuaikan jumlah tweet berdasarkan pilihan user:
+- PENDEK: 3 tweet (hook + 1 isi + CTA)
+- SEDANG: 5 tweet (hook + 3 isi + CTA)
+- PANJANG: 10 tweet (hook + 8 isi + CTA)
+
+Jika user tidak menyebut panjang, gunakan SEDANG (5 tweet).
+
+Tampilkan pilihan ini di awal output (sebagai metadata, sebelum tweet pertama):
+Panjang dipilih: [PENDEK/SEDANG/PANJANG] ([jumlah] tweet)
+
+TONE KHUSUS - INFLUENCER STYLE:
+Jika user memilih tone "INFLUENCER", gunakan gaya berikut:
+- Hook berupa situasi/pertanyaan yang relatable di kehidupan sehari-hari.
+- Struktur: Situasi → Masalah → Solusi bernomor → Alasan kenapa works.
+- Pakai angka dan data spesifik sebagai argumen (misal: "90% orang salah...", "Hemat 5 jam seminggu...").
+- Kalimat pendek, tegas, tidak bertele-tele.
+- Framing selalu win-win (menguntungkan semua pihak).
+- Tweet terakhir selalu diakhiri dengan pertanyaan ke audiens untuk memicu interaksi.
+- Boleh sisipkan 1 soft CTA follow di tweet terakhir (misal: "Follow @username buat tips harian kayak gini").
+- Tone tegas tapi tetap approachable, seperti teman yang lebih berpengalaman (mentor-like).
+
+STRUKTUR THREAD (UMUM):
 1. Hook (Post 1): Harus "menghentak". Gunakan angka, kontroversi ringan, atau janji hasil yang nyata. Hindari kata "Halo sobat X".
 2. Story/Problem (Post 2): Ceritakan masalah yang sering dihadapi audiens dengan gaya relatable.
 3. Solution Overview (Post 3): Kenapa cara ini beda dari yang lain.
@@ -36,7 +59,15 @@ ATURAN FORMAT & SPASI:
 - Numbering otomatis (1/, 2/, 3/, dst).
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.
-- PENTING: Gunakan spasi (line break) yang pas. Jangan numpuk semua teks jadi satu paragraf. Gunakan double enter untuk memisahkan poin-poin penting agar enak dibaca di layar HP. Buat teks terasa "bernafas".`;
+- PENTING: Gunakan spasi (line break) yang pas. Jangan numpuk semua teks jadi satu paragraf. Gunakan double enter untuk memisahkan poin-poin penting agar enak dibaca di layar HP. Buat teks terasa "bernafas".
+
+KESINAMBUNGAN ANTAR TWEET (WAJIB):
+- Setiap tweet harus terhubung secara alur dengan tweet sebelumnya.
+- Tweet 2 harus menjawab atau melanjutkan cliffhanger dari tweet 1.
+- Tweet 3 harus membangun dari poin yang ada di tweet 2, dan seterusnya.
+- Jangan ada tweet yang bisa dipindah posisinya tanpa merusak alur cerita.
+- Gunakan kata transisi natural di awal tweet: "Nah, dari situ...", "Dan ini yang bikin menarik...", "Balik lagi ke tadi...", "Faktanya...", "Tapi tunggu dulu...".
+- Keseluruhan thread harus terasa seperti satu cerita utuh yang mengalir, bukan sekadar kumpulan tips yang berdiri sendiri.`;
 
 export interface ViralBooster {
   hashtags?: string;
