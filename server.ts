@@ -67,15 +67,17 @@ STRUKTUR THREAD (UMUM):
 
 ATURAN FORMAT & SPASI (SANGAT KETAT):
 - Setiap post WAJIB maksimal 280 karakter. JANGAN PERNAH LEBIH.
-- ATURAN HITUNG KARAKTER (WAJIB):
+- ATURAN HITUNG KARAKTER (SANGAT KETAT):
+  * Maksimal 240 karakter per tweet (WAJIB).
   * Karakter biasa = 1.
   * Emoji = 2 karakter.
   * URL (link shope.ee/dll) = 23 karakter.
-- Setiap tweet WAJIB berisi ide yang sudah tuntas dan selesai. JANGAN memindahkan sisa kalimat ke tweet berikutnya.
-- Jika konten terlalu panjang, ringkas dan padatkan kalimatnya sampai muat dan tetap utuh dalam satu tweet (maks 280 karakter).
-- Lebih baik kalimat lebih pendek tapi tuntas daripada panjang tapi nanggung.
+- Setiap tweet WAJIB selesai dalam 1 ide yang tuntas. JANGAN memindahkan sisa kalimat ke tweet berikutnya.
+- Jika ide terlalu panjang, ringkas kalimatnya sampai muat dalam 240 karakter.
+- DILARANG mengakhiri tweet dengan kata yang menggantung (e.g., "buat", "atau", "dan", "yang", "di", "ke").
+- WAJIB mengakhiri setiap tweet dengan tanda baca yang jelas: titik (.), seru (!), atau tanya (?).
 - DILARANG KERAS memotong di tengah kata. Setiap tweet harus berakhir di kata yang sudah lengkap.
-- Jangan pernah menampilkan tweet yang melebihi 280 karakter.
+- Jangan pernah menampilkan tweet yang melebihi 240 karakter.
 - Gunakan format "baris per baris" (line by line). Jangan buat paragraf panjang.
 - Gunakan double enter untuk memisahkan setiap poin atau kalimat agar teks terasa "bernafas" dan sangat enak dibaca di layar HP.
 - Numbering otomatis (1/, 2/, 3/, dst).

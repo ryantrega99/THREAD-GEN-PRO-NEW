@@ -58,8 +58,8 @@ const calculateTwitterLength = (text: string) => {
   return length;
 };
 
-// Helper to truncate text to fit Twitter length at word boundary
-const truncateToTwitterLength = (text: string, maxLength: number = 280) => {
+// Helper to truncate text to fit Twitter length at word boundary and ensure it ends with punctuation
+const truncateToTwitterLength = (text: string, maxLength: number = 240) => {
   if (calculateTwitterLength(text) <= maxLength) return text;
   
   let truncated = text;
@@ -72,7 +72,23 @@ const truncateToTwitterLength = (text: string, maxLength: number = 280) => {
       truncated = truncated.slice(0, lastSpaceIndex);
     }
   }
-  return truncated.trim();
+  
+  let result = truncated.trim();
+  
+  // Ensure it doesn't end with hanging words
+  const hangingWords = ["buat", "atau", "dan", "yang", "di", "ke"];
+  const words = result.split(/\s+/);
+  while (words.length > 0 && hangingWords.includes(words[words.length - 1].toLowerCase())) {
+    words.pop();
+    result = words.join(" ");
+  }
+
+  // Ensure it ends with punctuation if it's been truncated
+  if (result.length > 0 && !/[.!?]$/.test(result)) {
+    result += ".";
+  }
+
+  return result;
 };
 
 export default function App() {
@@ -211,8 +227,8 @@ export default function App() {
           generateCoverImage(imagePrompt);
         }
 
-        // Ensure all tweets are within 280 characters using Twitter counting rules and word boundaries
-        const sanitizedTweets = (result.tweets || []).map(t => truncateToTwitterLength(t, 280));
+        // Ensure all tweets are within 240 characters using Twitter counting rules and word boundaries
+        const sanitizedTweets = (result.tweets || []).map(t => truncateToTwitterLength(t, 240));
         setThread(sanitizedTweets);
         setBooster(result.booster || null);
         saveToHistory(params.topic, sanitizedTweets, params.tone, result.booster);
@@ -1230,16 +1246,17 @@ export default function App() {
                         <div className="mt-6 flex items-center gap-4">
                           {(() => {
                             const tweetLen = calculateTwitterLength(tweet);
+                            const limit = 240;
                             return (
                               <>
                                 <div className={`h-1 flex-1 rounded-full bg-gray-100 overflow-hidden`}>
                                   <div 
-                                    className={`h-full transition-all duration-500 ${tweetLen > 260 ? 'bg-red-400' : 'bg-[#1DA1F2]'}`}
-                                    style={{ width: `${Math.min((tweetLen / 280) * 100, 100)}%` }}
+                                    className={`h-full transition-all duration-500 ${tweetLen > limit - 20 ? 'bg-red-400' : 'bg-[#1DA1F2]'}`}
+                                    style={{ width: `${Math.min((tweetLen / limit) * 100, 100)}%` }}
                                   />
                                 </div>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${tweetLen > 275 ? 'text-red-500 font-black' : tweetLen > 260 ? 'text-red-400' : 'text-gray-300'}`}>
-                                  {tweetLen} / 280
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${tweetLen > limit - 5 ? 'text-red-500 font-black' : tweetLen > limit - 20 ? 'text-red-400' : 'text-gray-300'}`}>
+                                  {tweetLen} / {limit}
                                 </span>
                               </>
                             );
