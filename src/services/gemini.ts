@@ -66,12 +66,13 @@ STRUKTUR THREAD (UMUM):
    - Contoh: "Btw, banyak yang nanya spill barangnya. Gue pake ini sih: [Nama Produk] karena [Alasan Jujur]. Cek aja sendiri."
    - Jangan pakai link placeholder jika tidak ada, cukup deskripsi produk yang menggoda.
 
-ATURAN FORMAT & SPASI:
-- Setiap post maksimal ~280 karakter (aman untuk X & Threads).
+ATURAN FORMAT & SPASI (SANGAT KETAT):
+- Setiap post WAJIB maksimal 280 karakter. JANGAN PERNAH LEBIH.
+- Gunakan format "baris per baris" (line by line). Jangan buat paragraf panjang.
+- Gunakan double enter untuk memisahkan setiap poin atau kalimat agar teks terasa "bernafas" dan sangat enak dibaca di layar HP.
 - Numbering otomatis (1/, 2/, 3/, dst).
 - Pisahkan setiap post dengan garis "---".
 - JANGAN gunakan markdown bold atau italic berlebihan, platform gak support itu secara native. Gunakan teks biasa.
-- PENTING: Gunakan spasi (line break) yang pas. Jangan numpuk semua teks jadi satu paragraf. Gunakan double enter untuk memisahkan poin-poin penting agar enak dibaca di layar HP. Buat teks terasa "bernafas".
 
 KESINAMBUNGAN ANTAR TWEET (WAJIB):
 - Setiap tweet harus terhubung secara alur dengan tweet sebelumnya.
