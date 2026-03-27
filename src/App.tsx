@@ -35,6 +35,40 @@ import { generateThread, ThreadParams, ViralBooster } from './services/gemini';
 
 type ViewState = 'landing' | 'code' | 'app';
 
+// Helper to calculate Twitter-style character length
+const calculateTwitterLength = (text: string) => {
+  if (!text) return 0;
+  
+  // 1. Handle URLs (count as 23)
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = text.match(urlRegex) || [];
+  let length = urls.length * 23;
+  let tempText = text.replace(urlRegex, "");
+
+  // 2. Handle Emojis (count as 2)
+  // Using a broad emoji regex
+  const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g;
+  const emojis = tempText.match(emojiRegex) || [];
+  length += emojis.length * 2;
+  tempText = tempText.replace(emojiRegex, "");
+
+  // 3. Normal characters
+  length += tempText.length;
+
+  return length;
+};
+
+// Helper to truncate text to fit Twitter length
+const truncateToTwitterLength = (text: string, maxLength: number = 280) => {
+  if (calculateTwitterLength(text) <= maxLength) return text;
+  
+  let truncated = text;
+  while (calculateTwitterLength(truncated) > maxLength && truncated.length > 0) {
+    truncated = truncated.slice(0, -1);
+  }
+  return truncated;
+};
+
 export default function App() {
   const [view, setView] = useState<ViewState>('landing');
   const [hasAccess, setHasAccess] = useState(false);
@@ -171,9 +205,11 @@ export default function App() {
           generateCoverImage(imagePrompt);
         }
 
-        setThread(result.tweets);
+        // Ensure all tweets are within 280 characters using Twitter counting rules
+        const sanitizedTweets = (result.tweets || []).map(t => truncateToTwitterLength(t, 280));
+        setThread(sanitizedTweets);
         setBooster(result.booster || null);
-        saveToHistory(params.topic, result.tweets, params.tone, result.booster);
+        saveToHistory(params.topic, sanitizedTweets, params.tone, result.booster);
       }
     } catch (err: any) {
       const msg = err.message || 'Terjadi kesalahan sistem';
@@ -1186,15 +1222,22 @@ export default function App() {
                         )}
 
                         <div className="mt-6 flex items-center gap-4">
-                          <div className={`h-1 flex-1 rounded-full bg-gray-100 overflow-hidden`}>
-                            <div 
-                              className={`h-full transition-all duration-500 ${tweet.length > 260 ? 'bg-red-400' : 'bg-[#1DA1F2]'}`}
-                              style={{ width: `${Math.min((tweet.length / 280) * 100, 100)}%` }}
-                            />
-                          </div>
-                          <span className={`text-[10px] font-black uppercase tracking-widest ${tweet.length > 260 ? 'text-red-400' : 'text-gray-300'}`}>
-                            {tweet.length} / 280
-                          </span>
+                          {(() => {
+                            const tweetLen = calculateTwitterLength(tweet);
+                            return (
+                              <>
+                                <div className={`h-1 flex-1 rounded-full bg-gray-100 overflow-hidden`}>
+                                  <div 
+                                    className={`h-full transition-all duration-500 ${tweetLen > 260 ? 'bg-red-400' : 'bg-[#1DA1F2]'}`}
+                                    style={{ width: `${Math.min((tweetLen / 280) * 100, 100)}%` }}
+                                  />
+                                </div>
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${tweetLen > 275 ? 'text-red-500 font-black' : tweetLen > 260 ? 'text-red-400' : 'text-gray-300'}`}>
+                                  {tweetLen} / 280
+                                </span>
+                              </>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>

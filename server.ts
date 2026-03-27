@@ -67,6 +67,11 @@ STRUKTUR THREAD (UMUM):
 
 ATURAN FORMAT & SPASI (SANGAT KETAT):
 - Setiap post WAJIB maksimal 280 karakter. JANGAN PERNAH LEBIH.
+- ATURAN HITUNG KARAKTER (WAJIB):
+  * Karakter biasa = 1.
+  * Emoji = 2 karakter.
+  * URL (link shope.ee/dll) = 23 karakter.
+- Jika melebihi 280 karakter, potong dan susun ulang kalimatnya sampai tepat di bawah 280 karakter.
 - Gunakan format "baris per baris" (line by line). Jangan buat paragraf panjang.
 - Gunakan double enter untuk memisahkan setiap poin atau kalimat agar teks terasa "bernafas" dan sangat enak dibaca di layar HP.
 - Numbering otomatis (1/, 2/, 3/, dst).
